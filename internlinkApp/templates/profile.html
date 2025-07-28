@@ -1,0 +1,39 @@
+{% extends 'userbase.html' %}
+
+{% block title %}User Profile{% endblock %}
+
+{# Set the active page to be highlighted in the navigation bar. #}
+{% set active_page = 'profile' %}
+
+{% block content %}
+<section class="container py-5">
+    <div class="row justify-content-center text-center">
+        <div class="col-lg-7">
+            <h1>{{ profile.role.title() }} Profile</h1>
+            <p class="lead text-muted">Here's everything we know about you.</p>
+        </div>
+    </div>
+</section>
+    
+<section class="container">
+    <form>
+        <div class="row justify-content-center">
+            <div class="col-lg-3 mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" name="username" value="{{ profile.username }}" disabled>
+            </div>
+            <div class="col-lg-3 mb-3">
+                <label for="useremail" class="form-label">Email</label>
+                <input type="text" class="form-control" id="useremail" name="useremail" value="{{ profile.email }}" disabled>
+            </div>
+        </div>
+        <div class="my-3 row justify-content-center">
+            <div class="col-lg-6">
+                <p>You could make the fields on this form editable, and add buttons to let users save or cancel any changes they make.</p>
+                <hr />
+                <p><small><em>Hint: Remember to think about validation and error handling: for example, what happens if users enter an invalid email address or a username that's already taken?</em></small></p>
+            </div>
+        </div>
+    </form>
+</section>
+{% endblock %}
