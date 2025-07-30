@@ -1,7 +1,124 @@
-INSERT INTO `users` (`username`, `password_hash`, `email`, `role`)
-VALUES
-	('customer1', '$2b$12$3W3b9AnL6umkIBm6THGHB.yId0/GuR/Gi7R8ZevTwR0xi3o8rrvZa', 'customer1@example.com', 'customer'),
-	('customer2', '$2b$12$6KPIL1c77kZpDXzDDRuJV.ielxGNDUIJPkxl0K5JdQoZTMrcIMBym', 'customer2@example.com', 'customer'),
-	('staff1', '$2b$12$OKt92QtCTJmhr4wqRMYZH.6lOSBUh0oGKcvaNerR2fQe6L7.ViQ0O', 'staff1@example.com', 'staff'),
-	('staff2', '$2b$12$mT8QI2wKBvpoOFZsRwaLkeuS9FS4vc6sX.GJNnNMA1EKmypk6UYGa', 'staff2@example.com', 'staff'),
-	('admin1', '$2b$12$.jUTmK8lb/4O8O3oFuHyeerUl9qs1c.slhGzpYDMJqxGnnToGPuMO', 'admin1@example.com', 'admin');
+-- Adding data to admin table (2 required)
+INSERT INTO `users` (`username`, `full_name`, `email`, `password_hash`, `profile_image`, `role`, `status`) VALUES
+('admin_max', 'Max Admin', 'admin.max@internlink.com', '$2b$12$YOUR_ADMIN_MAX_HASH_HERE', 'uploads/default_admin.png', 'admin', 'active'),
+('admin_sara', 'Sara Support', 'sara.bell@internlink.com', '$2b$12$YOUR_ADMIN_SARA_HASH_HERE', 'uploads/default_admin.png', 'admin', 'active');
+
+-- Adding data to Employers table
+INSERT INTO `users` (`username`, `full_name`, `email`, `password_hash`, `profile_image`, `role`, `status`) VALUES
+('emp_alpha', 'Alice Corp', 'alice@alphacorp.com', '$2b$12$YOUR_EMP_ALPHA_HASH_HERE', 'uploads/logo_alpha.png', 'employer', 'active'),
+('emp_beta', 'Bob Beta', 'bob@betaco.net', '$2b$12$YOUR_EMP_BETA_HASH_HERE', 'uploads/logo_beta.png', 'employer', 'active'),
+('emp_gamma', 'Charlie Gamma', 'charlie@gammasoft.org', '$2b$12$YOUR_EMP_GAMMA_HASH_HERE', 'uploads/logo_gamma.png', 'employer', 'active'),
+('emp_delta', 'Diana Delta', 'diana@deltalabs.io', '$2b$12$YOUR_EMP_DELTA_HASH_HERE', 'uploads/logo_delta.png', 'employer', 'active'),
+('emp_epsilon', 'Evan Epsilon', 'evan@epsilonmarketing.co', '$2b$12$YOUR_EMP_EPSILON_HASH_HERE', 'uploads/logo_epsilon.png', 'employer', 'active');
+
+-- Adding data to students table
+INSERT INTO `users` (`username`, `full_name`, `email`, `password_hash`, `profile_image`, `role`, `status`) VALUES
+('stu_liam', 'Liam Davis', 'liam.d@example.com', '$2b$12$YOUR_STU_LIAM_HASH_HERE', 'uploads/default_student.png', 'student', 'active'),
+('stu_olivia', 'Olivia White', 'olivia.w@example.com', '$2b$12$YOUR_STU_OLIVIA_HASH_HERE', 'uploads/default_student.png', 'student', 'active'),
+('stu_noah', 'Noah Green', 'noah.g@example.com', '$2b$12$YOUR_STU_NOAH_HASH_HERE', 'uploads/default_student.png', 'student', 'active'),
+('stu_emma', 'Emma Black', 'emma.b@example.com', '$2b$12$YOUR_STU_EMMA_HASH_HERE', 'uploads/default_student.png', 'student', 'active'),
+('stu_sophia', 'Sophia Brown', 'sophia.b@example.com', '$2b$12$YOUR_STU_SOPHIA_HASH_HERE', 'uploads/default_student.png', 'student', 'active'),
+('stu_jackson', 'Jackson King', 'jackson.k@example.com', '$2b$12$YOUR_STU_JACKSON_HASH_HERE', 'uploads/default_student.png', 'student', 'active'),
+('stu_ava', 'Ava Queen', 'ava.q@example.com', '$2b$12$YOUR_STU_AVA_HASH_HERE', 'uploads/default_student.png', 'student', 'active'),
+('stu_lucas', 'Lucas Knight', 'lucas.k@example.com', '$2b$12$YOUR_STU_LUCAS_HASH_HERE', 'uploads/default_student.png', 'student', 'active'),
+('stu_mia', 'Mia Bishop', 'mia.b@example.com', '$2b$12$YOUR_STU_MIA_HASH_HERE', 'uploads/default_student.png', 'student', 'active'),
+('stu_aidan', 'Aidan Hunter', 'aidan.h@example.com', '$2b$12$YOUR_STU_AIDAN_HASH_HERE', 'uploads/default_student.png', 'student', 'active'),
+('stu_isabella', 'Isabella Fisher', 'isabella.f@example.com', '$2b$12$YOUR_STU_ISABELLA_HASH_HERE', 'uploads/default_student.png', 'student', 'active'),
+('stu_ethan', 'Ethan Baker', 'ethan.b@example.com', '$2b$12$YOUR_STU_ETHAN_HASH_HERE', 'uploads/default_student.png', 'student', 'active'),
+('stu_chloe', 'Chloe Miller', 'chloe.m@example.com', '$2b$12$YOUR_STU_CHLOE_HASH_HERE', 'uploads/default_student.png', 'student', 'active'),
+('stu_mason', 'Mason Clark', 'mason.c@example.com', '$2b$12$YOUR_STU_MASON_HASH_HERE', 'uploads/default_student.png', 'student', 'active'),
+('stu_harper', 'Harper Lewis', 'harper.l@example.com', '$2b$12$YOUR_STU_HARPER_HASH_HERE', 'uploads/default_student.png', 'student', 'active'),
+('stu_logan', 'Logan Hill', 'logan.h@example.com', '$2b$12$YOUR_STU_LOGAN_HASH_HERE', 'uploads/default_student.png', 'student', 'active'),
+('stu_evelyn', 'Evelyn Scott', 'evelyn.s@example.com', '$2b$12$YOUR_STU_EVELYN_HASH_HERE', 'uploads/default_student.png', 'student', 'active'),
+('stu_benjamin', 'Benjamin Adams', 'benjamin.a@example.com', '$2b$12$YOUR_STU_BENJAMIN_HASH_HERE', 'uploads/default_student.png', 'student', 'active'),
+('stu_amelia', 'Amelia Ward', 'amelia.w@example.com', '$2b$12$YOUR_STU_AMELIA_HASH_HERE', 'uploads/default_student.png', 'student', 'active'),
+('stu_alexander', 'Alexander Bell', 'alexander.b@example.com', '$2b$12$YOUR_STU_ALEXANDER_HASH_HERE', 'uploads/default_student.png', 'student', 'active');
+
+
+-- 2. Adding data to the "student" table (It will be linked to user ID's)
+INSERT INTO `student` (`user_id`, `university`, `course`, `resume_path`) VALUES
+((SELECT user_id FROM users WHERE username = 'stu_liam'), 'University A', 'CompSci', 'uploads/liam_resume.pdf'),
+((SELECT user_id FROM users WHERE username = 'stu_olivia'), 'University B', 'Data Analytics', 'uploads/olivia_resume.pdf'),
+((SELECT user_id FROM users WHERE username = 'stu_noah'), 'University C', 'Electrical Eng', 'uploads/noah_resume.pdf'),
+((SELECT user_id FROM users WHERE username = 'stu_emma'), 'University D', 'Marketing', 'uploads/emma_resume.pdf'),
+((SELECT user_id FROM users WHERE username = 'stu_sophia'), 'University E', 'Graphic Design', 'uploads/sophia_resume.pdf'),
+((SELECT user_id FROM users WHERE username = 'stu_jackson'), 'University A', 'Software Eng', 'uploads/jackson_resume.pdf'),
+((SELECT user_id FROM users WHERE username = 'stu_ava'), 'University B', 'Business Admin', 'uploads/ava_resume.pdf'),
+((SELECT user_id FROM users WHERE username = 'stu_lucas'), 'University C', 'Environmental Std', 'uploads/lucas_resume.pdf'),
+((SELECT user_id FROM users WHERE username = 'stu_mia'), 'University D', 'Architecture', 'uploads/mia_resume.pdf'),
+((SELECT user_id FROM users WHERE username = 'stu_aidan'), 'University E', 'Civil Eng', 'uploads/aidan_resume.pdf'),
+((SELECT user_id FROM users WHERE username = 'stu_isabella'), 'University A', 'Cybersecurity', 'uploads/isabella_resume.pdf'),
+((SELECT user_id FROM users WHERE username = 'stu_ethan'), 'University B', 'Finance', 'uploads/ethan_resume.pdf'),
+((SELECT user_id FROM users WHERE username = 'stu_chloe'), 'University C', 'Journalism', 'uploads/chloe_resume.pdf'),
+((SELECT user_id FROM users WHERE username = 'stu_mason'), 'University D', 'Game Dev', 'uploads/mason_resume.pdf'),
+((SELECT user_id FROM users WHERE username = 'stu_harper'), 'University E', 'HR Management', 'uploads/harper_resume.pdf'),
+((SELECT user_id FROM users WHERE username = 'stu_logan'), 'University A', 'AgriBusiness', 'uploads/logan_resume.pdf'),
+((SELECT user_id FROM users WHERE username = 'stu_evelyn'), 'University B', 'Data Science', 'uploads/evelyn_resume.pdf'),
+((SELECT user_id FROM users WHERE username = 'stu_benjamin'), 'University C', 'Robotics', 'uploads/benjamin_resume.pdf'),
+((SELECT user_id FROM users WHERE username = 'stu_amelia'), 'University D', 'Psychology', 'uploads/amelia_resume.pdf'),
+((SELECT user_id FROM users WHERE username = 'stu_alexander'), 'University E', 'Law', 'uploads/alexander_resume.pdf');
+
+
+-- 3. Adding data to `employer` table (It will be linked to users table)
+INSERT INTO `employer` (`user_id`, `company_name`, `company_description`, `website`, `logo_path`) VALUES
+((SELECT user_id FROM users WHERE username = 'emp_alpha'), 'AlphaCorp Tech', 'A leading technology firm specializing in cloud solutions.', 'https://www.alphacorp.com', 'uploads/logo_alpha.png'),
+((SELECT user_id FROM users WHERE username = 'emp_beta'), 'Beta Innovate', 'Focused on sustainable energy technologies and green solutions.', 'https://www.betainnovate.co', 'uploads/logo_beta.png'),
+((SELECT user_id FROM users WHERE username = 'emp_gamma'), 'GammaSoft Dev', 'Developing cutting-edge software and gaming experiences.', 'https://www.gammasoft.io', 'uploads/logo_gamma.png'),
+((SELECT user_id FROM users WHERE username = 'emp_delta'), 'Delta Pharma', 'Research and development in pharmaceuticals and biotechnology.', 'https://www.deltapharma.com', 'uploads/logo_delta.png'),
+((SELECT user_id FROM users WHERE username = 'emp_epsilon'), 'Epsilon Marketers', 'A full-service digital marketing agency.', 'https://www.epsilonmarketers.org', 'uploads/logo_epsilon.png');
+
+
+-- 4. Adding data to `internship` table (The requirement is for 20 internships)
+-- The deadlines for internship closure is according to Today's date (30 July, 2025).
+INSERT INTO `internship` (`company_id`, `title`, `description`, `location`, `duration`, `skills_required`, `deadline`, `stipend`, `number_of_opening`, `additional_req`) VALUES
+((SELECT emp_id FROM employer WHERE company_name = 'AlphaCorp Tech'), 'Junior Software Engineer', 'Develop and maintain web applications using modern frameworks.', 'Remote', '6 months', 'Python, SQL, Flask, Git', '2025-09-15', 'Paid', 3, 'Experience with REST APIs a plus.'),
+((SELECT emp_id FROM employer WHERE company_name = 'AlphaCorp Tech'), 'Cloud Operations Intern', 'Assist with cloud infrastructure management on AWS/Azure.', 'Auckland, NZ', '4 months', 'Linux, AWS, Azure, Scripting', '2025-09-20', 'Paid', 2, 'Basic understanding of networking.'),
+((SELECT emp_id FROM employer WHERE company_name = 'Beta Innovate'), 'Solar Energy Research Assistant', 'Participate in research on photovoltaic cell efficiency.', 'Christchurch, NZ', '8 months', 'Physics, Material Science, Lab Techniques', '2025-10-01', 'Paid', 2, 'Prior research experience beneficial.'),
+((SELECT emp_id FROM employer WHERE company_name = 'Beta Innovate'), 'Sustainability Consultant Intern', 'Support projects focused on corporate sustainability strategies.', 'Wellington, NZ', '3 months', 'Environmental Science, Policy Analysis', '2025-09-05', 'Unpaid', 1, 'Strong communication skills.'),
+((SELECT emp_id FROM employer WHERE company_name = 'GammaSoft Dev'), 'Game Developer Intern (Unity)', 'Contribute to mobile game development using Unity.', 'Remote', '5 months', 'Unity, C#, Game Design Principles', '2025-09-25', 'Paid', 3, 'Portfolio of personal projects.'),
+((SELECT emp_id FROM employer WHERE company_name = 'GammaSoft Dev'), 'UI/UX Design Intern', 'Design user interfaces and experiences for software products.', 'Auckland, NZ', '6 months', 'Figma, Adobe XD, User Research', '2025-10-10', 'Paid', 1, 'Basic understanding of graphic design.'),
+((SELECT emp_id FROM employer WHERE company_name = 'Delta Pharma'), 'Clinical Research Intern', 'Assist in data collection and management for clinical trials.', 'Dunedin, NZ', '4 months', 'Biology, Data Entry, Excel', '2025-09-30', 'Paid', 2, 'Attention to detail is crucial.'),
+((SELECT emp_id FROM employer WHERE company_name = 'Delta Pharma'), 'Pharmaceutical Lab Assistant', 'Support laboratory operations and chemical analysis.', 'Auckland, NZ', '7 months', 'Chemistry, Lab Safety Protocols', '2025-11-01', 'Paid', 3, 'Experience with lab equipment.'),
+((SELECT emp_id FROM employer WHERE company_name = 'Epsilon Marketers'), 'Digital Marketing Specialist', 'Develop and execute social media marketing campaigns.', 'Remote', '3 months', 'Social Media, Content Creation, SEO Basics', '2025-08-25', 'Unpaid', 2, 'Creative and analytical thinking.'),
+((SELECT emp_id FROM employer WHERE company_name = 'Epsilon Marketers'), 'SEO Analyst Intern', 'Conduct keyword research and optimize website content for search engines.', 'Wellington, NZ', '5 months', 'SEO Tools, Google Analytics, Content Strategy', '2025-10-20', 'Paid', 1, 'Basic HTML/CSS knowledge.'),
+((SELECT emp_id FROM employer WHERE company_name = 'AlphaCorp Tech'), 'Database Administrator Intern', 'Learn to manage and optimize relational databases.', 'Auckland, NZ', '6 months', 'MySQL, Database Design, Data Modeling', '2025-10-01', 'Paid', 1, 'Interest in data architecture.'),
+((SELECT emp_id FROM employer WHERE company_name = 'AlphaCorp Tech'), 'Frontend Developer Intern', 'Build interactive user interfaces for web applications.', 'Remote', '4 months', 'HTML, CSS, JavaScript, React/Vue', '2025-09-10', 'Paid', 2, 'Familiarity with modern frontend frameworks.'),
+((SELECT emp_id FROM employer WHERE company_name = 'Beta Innovate'), 'Energy Efficiency Audit Intern', 'Conduct audits of commercial buildings for energy savings.', 'Christchurch, NZ', '3 months', 'Energy Systems, Building Science, Report Writing', '2025-08-30', 'Paid', 1, 'Analytical and investigative skills.'),
+((SELECT emp_id FROM employer WHERE company_name = 'Beta Innovate'), 'Community Engagement Intern', 'Assist in outreach programs promoting renewable energy adoption.', 'Wellington, NZ', '4 months', 'Community Organizing, Public Speaking', '2025-09-28', 'Unpaid', 1, 'Strong interpersonal skills.'),
+((SELECT emp_id FROM employer WHERE company_name = 'GammaSoft Dev'), 'Backend Developer Intern', 'Develop server-side logic and database interactions.', 'Auckland, NZ', '6 months', 'Python, Django/Node.js, REST APIs', '2025-11-05', 'Paid', 2, 'Experience with server frameworks.'),
+((SELECT emp_id FROM employer WHERE company_name = 'GammaSoft Dev'), 'Testing & QA Intern', 'Perform manual and automated testing of software products.', 'Remote', '3 months', 'Testing Methodologies, Bug Tracking, Selenium', '2025-09-15', 'Paid', 2, 'Attention to detail, logical thinking.'),
+((SELECT emp_id FROM employer WHERE company_name = 'Delta Pharma'), 'Bioinformatics Intern', 'Analyze biological data using computational tools.', 'Dunedin, NZ', '5 months', 'Python, R, Biostatistics, Data Visualization', '2025-10-25', 'Paid', 1, 'Familiarity with biological datasets.'),
+((SELECT emp_id FROM employer WHERE company_name = 'Delta Pharma'), 'Medical Affairs Intern', 'Support medical information and scientific communication.', 'Auckland, NZ', '6 months', 'Medical Writing, Research Skills', '2025-11-10', 'Paid', 1, 'Strong written and verbal communication.'),
+((SELECT emp_id FROM employer WHERE company_name = 'Epsilon Marketers'), 'Content Marketing Intern', 'Create compelling written and visual content for blogs and websites.', 'Remote', '4 months', 'Copywriting, SEO, Graphic Design Tools', '2025-09-20', 'Unpaid', 1, 'Excellent writing skills.'),
+((SELECT emp_id FROM employer WHERE company_name = 'Epsilon Marketers'), 'Campaign Management Intern', 'Assist in the planning and execution of advertising campaigns.', 'Wellington, NZ', '3 months', 'Project Management, Digital Advertising', '2025-08-28', 'Paid', 1, 'Organizational skills, analytical.');
+
+
+-- 5. Adding data to the `application` table 
+INSERT INTO `application` (`student_id`, `internship_id`, `status`, `feedback`) VALUES
+((SELECT student_id FROM student WHERE user_id = (SELECT user_id FROM users WHERE username = 'stu_liam')), (SELECT internship_id FROM internship WHERE title = 'Junior Software Engineer' AND company_id = (SELECT emp_id FROM employer WHERE company_name = 'AlphaCorp Tech') LIMIT 1), 'Accepted', 'Your skills are a great match! Welcome to the team.'),
+((SELECT student_id FROM student WHERE user_id = (SELECT user_id FROM users WHERE username = 'stu_olivia')), (SELECT internship_id FROM internship WHERE title = 'Junior Software Engineer' AND company_id = (SELECT emp_id FROM employer WHERE company_name = 'AlphaCorp Tech') LIMIT 1), 'Pending', NULL),
+((SELECT student_id FROM student WHERE user_id = (SELECT user_id FROM users WHERE username = 'stu_noah')), (SELECT internship_id FROM internship WHERE title = 'Junior Software Engineer' AND company_id = (SELECT emp_id FROM employer WHERE company_name = 'AlphaCorp Tech') LIMIT 1), 'Rejected', 'Highly competitive pool; we wish you the best in your search.'),
+
+((SELECT student_id FROM student WHERE user_id = (SELECT user_id FROM users WHERE username = 'stu_emma')), (SELECT internship_id FROM internship WHERE title = 'Cloud Operations Intern' AND company_id = (SELECT emp_id FROM employer WHERE company_name = 'AlphaCorp Tech') LIMIT 1), 'Pending', NULL),
+((SELECT student_id FROM student WHERE user_id = (SELECT user_id FROM users WHERE username = 'stu_sophia')), (SELECT internship_id FROM internship WHERE title = 'Cloud Operations Intern' AND company_id = (SELECT emp_id FROM employer WHERE company_name = 'AlphaCorp Tech') LIMIT 1), 'Rejected', 'Limited slots available; another candidate was a closer fit.'),
+
+((SELECT student_id FROM student WHERE user_id = (SELECT user_id FROM users WHERE username = 'stu_jackson')), (SELECT internship_id FROM internship WHERE title = 'Solar Energy Research Assistant' AND company_id = (SELECT emp_id FROM employer WHERE company_name = 'Beta Innovate') LIMIT 1), 'Accepted', 'Excited by your academic background and enthusiasm.'),
+((SELECT student_id FROM student WHERE user_id = (SELECT user_id FROM users WHERE username = 'stu_ava')), (SELECT internship_id FROM internship WHERE title = 'Solar Energy Research Assistant' AND company_id = (SELECT emp_id FROM employer WHERE company_name = 'Beta Innovate') LIMIT 1), 'Pending', NULL),
+
+((SELECT student_id FROM student WHERE user_id = (SELECT user_id FROM users WHERE username = 'stu_lucas')), (SELECT internship_id FROM internship WHERE title = 'Game Developer Intern (Unity)' AND company_id = (SELECT emp_id FROM employer WHERE company_name = 'GammaSoft Dev') LIMIT 1), 'Accepted', 'Your portfolio stood out! Welcome to the dev team.'),
+((SELECT student_id FROM student WHERE user_id = (SELECT user_id FROM users WHERE username = 'stu_mia')), (SELECT internship_id FROM internship WHERE title = 'Game Developer Intern (Unity)' AND company_id = (SELECT emp_id FROM employer WHERE company_name = 'GammaSoft Dev') LIMIT 1), 'Pending', NULL),
+
+((SELECT student_id FROM student WHERE user_id = (SELECT user_id FROM users WHERE username = 'stu_aidan')), (SELECT internship_id FROM internship WHERE title = 'Clinical Research Intern' AND company_id = (SELECT emp_id FROM employer WHERE company_name = 'Delta Pharma') LIMIT 1), 'Rejected', 'We require more specific experience in data coordination.'),
+((SELECT student_id FROM student WHERE user_id = (SELECT user_id FROM users WHERE username = 'stu_isabella')), (SELECT internship_id FROM internship WHERE title = 'Clinical Research Intern' AND company_id = (SELECT emp_id FROM employer WHERE company_name = 'Delta Pharma') LIMIT 1), 'Pending', NULL),
+
+((SELECT student_id FROM student WHERE user_id = (SELECT user_id FROM users WHERE username = 'stu_ethan')), (SELECT internship_id FROM internship WHERE title = 'Digital Marketing Specialist' AND company_id = (SELECT emp_id FROM employer WHERE company_name = 'Epsilon Marketers') LIMIT 1), 'Accepted', 'Your digital presence is impressive!'),
+((SELECT student_id FROM student WHERE user_id = (SELECT user_id FROM users WHERE username = 'stu_chloe')), (SELECT internship_id FROM internship WHERE title = 'Digital Marketing Specialist' AND company_id = (SELECT emp_id FROM employer WHERE company_name = 'Epsilon Marketers') LIMIT 1), 'Pending', NULL),
+
+((SELECT student_id FROM student WHERE user_id = (SELECT user_id FROM users WHERE username = 'stu_mason')), (SELECT internship_id FROM internship WHERE title = 'Database Administrator Intern' AND company_id = (SELECT emp_id FROM employer WHERE company_name = 'AlphaCorp Tech') LIMIT 1), 'Pending', NULL),
+((SELECT student_id FROM student WHERE user_id = (SELECT user_id FROM users WHERE username = 'stu_harper')), (SELECT internship_id FROM internship WHERE title = 'Frontend Developer Intern' AND company_id = (SELECT emp_id FROM employer WHERE company_name = 'AlphaCorp Tech') LIMIT 1), 'Pending', NULL),
+((SELECT student_id FROM student WHERE user_id = (SELECT user_id FROM users WHERE username = 'stu_logan')), (SELECT internship_id FROM internship WHERE title = 'Energy Efficiency Audit Intern' AND company_id = (SELECT emp_id FROM employer WHERE company_name = 'Beta Innovate') LIMIT 1), 'Rejected', 'Another candidate had more direct field experience.'),
+((SELECT student_id FROM student WHERE user_id = (SELECT user_id FROM users WHERE username = 'stu_evelyn')), (SELECT internship_id FROM internship WHERE title = 'Backend Developer Intern' AND company_id = (SELECT emp_id FROM employer WHERE company_name = 'GammaSoft Dev') LIMIT 1), 'Pending', NULL),
+((SELECT student_id FROM student WHERE user_id = (SELECT user_id FROM users WHERE username = 'stu_benjamin')), (SELECT internship_id FROM internship WHERE title = 'Bioinformatics Intern' AND company_id = (SELECT emp_id FROM employer WHERE company_name = 'Delta Pharma') LIMIT 1), 'Accepted', 'Your analytical skills are perfect for this role.'),
+((SELECT student_id FROM student WHERE user_id = (SELECT user_id FROM users WHERE username = 'stu_amelia')), (SELECT internship_id FROM internship WHERE title = 'Content Marketing Intern' AND company_id = (SELECT emp_id FROM employer WHERE company_name = 'Epsilon Marketers') LIMIT 1), 'Pending', NULL),
+((SELECT student_id FROM student WHERE user_id = (SELECT user_id FROM users WHERE username = 'stu_alexander')), (SELECT internship_id FROM internship WHERE title = 'Campaign Management Intern' AND company_id = (SELECT emp_id FROM employer WHERE company_name = 'Epsilon Marketers') LIMIT 1), 'Pending', NULL),
+((SELECT student_id FROM student WHERE user_id = (SELECT user_id FROM users WHERE username = 'stu_liam')), (SELECT internship_id FROM internship WHERE title = 'Cloud Operations Intern' AND company_id = (SELECT emp_id FROM employer WHERE company_name = 'AlphaCorp Tech') LIMIT 1), 'Pending', NULL);
