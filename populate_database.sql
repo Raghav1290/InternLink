@@ -35,7 +35,7 @@ INSERT INTO `users` (`username`, `full_name`, `email`, `password_hash`, `profile
 ('stu_alexander', 'Alexander Bell', 'alexander.b@example.com', '$2b$12$YOUR_STU_ALEXANDER_HASH_HERE', 'uploads/default_student.png', 'student', 'active');
 
 
--- 2. Adding data to the "student" table (It will be linked to user ID's)
+-- Adding data to the "student" table (It will be linked to user ID's)
 INSERT INTO `student` (`user_id`, `university`, `course`, `resume_path`) VALUES
 ((SELECT user_id FROM users WHERE username = 'stu_liam'), 'University A', 'CompSci', 'uploads/liam_resume.pdf'),
 ((SELECT user_id FROM users WHERE username = 'stu_olivia'), 'University B', 'Data Analytics', 'uploads/olivia_resume.pdf'),
@@ -59,7 +59,7 @@ INSERT INTO `student` (`user_id`, `university`, `course`, `resume_path`) VALUES
 ((SELECT user_id FROM users WHERE username = 'stu_alexander'), 'University E', 'Law', 'uploads/alexander_resume.pdf');
 
 
--- 3. Adding data to `employer` table (It will be linked to users table)
+-- Adding data to `employer` table (It will be linked to users table)
 INSERT INTO `employer` (`user_id`, `company_name`, `company_description`, `website`, `logo_path`) VALUES
 ((SELECT user_id FROM users WHERE username = 'emp_alpha'), 'AlphaCorp Tech', 'A leading technology firm specializing in cloud solutions.', 'https://www.alphacorp.com', 'uploads/logo_alpha.png'),
 ((SELECT user_id FROM users WHERE username = 'emp_beta'), 'Beta Innovate', 'Focused on sustainable energy technologies and green solutions.', 'https://www.betainnovate.co', 'uploads/logo_beta.png'),
@@ -68,7 +68,7 @@ INSERT INTO `employer` (`user_id`, `company_name`, `company_description`, `websi
 ((SELECT user_id FROM users WHERE username = 'emp_epsilon'), 'Epsilon Marketers', 'A full-service digital marketing agency.', 'https://www.epsilonmarketers.org', 'uploads/logo_epsilon.png');
 
 
--- 4. Adding data to `internship` table (The requirement is for 20 internships)
+-- Adding data to `internship` table (The requirement is for 20 internships)
 -- The deadlines for internship closure is according to Today's date (30 July, 2025).
 INSERT INTO `internship` (`company_id`, `title`, `description`, `location`, `duration`, `skills_required`, `deadline`, `stipend`, `number_of_opening`, `additional_req`) VALUES
 ((SELECT emp_id FROM employer WHERE company_name = 'AlphaCorp Tech'), 'Junior Software Engineer', 'Develop and maintain web applications using modern frameworks.', 'Remote', '6 months', 'Python, SQL, Flask, Git', '2025-09-15', 'Paid', 3, 'Experience with REST APIs a plus.'),
