@@ -241,3 +241,15 @@ def apply_for_internship(internship_id):
                         student_profile=student_profile,
                         application_exists=application_exists,
                         form_errors=form_errors) 
+
+# My application route
+@app.route('/my_applications', methods=['GET'])
+def my_applications():
+    
+    if 'loggedin' not in session:
+        return redirect(url_for('login'))
+    elif session['role'] != 'student':
+        return render_template('access_denied.html'), 403
+
+    applications = [] 
+    return render_template('my_applications.html', applications=applications)

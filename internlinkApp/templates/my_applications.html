@@ -1,0 +1,17 @@
+{% extends 'userbase.html' %}
+
+{% block title %}My Applications{% endblock %}
+
+{% set active_page = 'my_applications' %}
+
+{% block content %}
+<section class="container py-5 text-center">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <h1>My Applications</h1>
+            <p class="lead text-muted">This page will show your application status. Full functionality coming soon!</p>
+            <a href="{{ url_for('student_home') }}" class="btn btn-primary mt-3">Back to Student Home</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

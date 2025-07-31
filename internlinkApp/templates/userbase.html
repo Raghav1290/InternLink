@@ -23,7 +23,10 @@
 						</li>
 						{% if session['role'] == 'student' %}
                         <li class="nav-item">
-                            <a class="nav-link{% if active_page=='browse_internships' %} active{% endif %}" href="{{ url_for('browse_internships') }}">Browse Internships</a> {# Added link #}
+                            <a class="nav-link{% if active_page=='browse_internships' %} active{% endif %}" href="{{ url_for('browse_internships') }}">Browse Internships</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link{% if active_page=='my_applications' %} active{% endif %}" href="{{ url_for('my_applications') }}">My Applications</a> 
                         </li>
                         {% elif session['role'] == 'employer' %}
                         {% elif session['role'] == 'admin' %}
@@ -46,6 +49,20 @@
 
         <main class="flex-grow-1">
             <div class="container-fluid px-4">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="row justify-content-center">
+                            <div class="col-lg-10">
+                                {% for category, message in messages %}
+                                    <div class="alert alert-{{ category }} alert-dismissible fade show mt-3" role="alert">
+                                        {{ message|safe }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endwith %}
                 {% block content %}{% endblock %}
             </div>
 		</main>
