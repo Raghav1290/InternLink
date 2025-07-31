@@ -1,0 +1,55 @@
+{% extends 'userbase.html' %}
+
+{% block title %}Internship Details{% endblock %}
+
+{% set active_page = 'browse_internships' %}
+
+{% block content %}
+<section class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            {% if internship %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white text-center py-4">
+                    <h2>{{ internship.title }}</h2>
+                    {% if internship.logo_path %}
+                        <img src="{{ url_for('static', filename=internship.logo_path) }}" alt="{{ internship.company_name }} Logo" class="mt-2 mb-1" style="max-height: 80px; width: auto; background-color: white; padding: 5px; border-radius: 5px;">
+                    {% endif %}
+                    <h4 class="card-subtitle mt-2">{{ internship.company_name }}</h4>
+                </div>
+                <div class="card-body p-4">
+                    <p class="card-text"><strong>Description:</strong> {{ internship.description }}</p>
+                    <hr>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <p><strong>Location:</strong> {{ internship.location }}</p>
+                            <p><strong>Duration:</strong> {{ internship.duration }}</p>
+                            <p><strong>Stipend:</strong> {{ internship.stipend }}</p>
+                            <p><strong>Openings:</strong> {{ internship.number_of_opening }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Skills Required:</strong> {{ internship.skills_required }}</p>
+                            <p><strong>Application Deadline:</strong> {{ internship.deadline.strftime('%Y-%m-%d') }}</p>
+                            {% if internship.additional_req %}
+                            <p><strong>Additional Requirements:</strong> {{ internship.additional_req }}</p>
+                            {% endif %}
+                            {% if internship.website %}
+                            <p><strong>Company Website:</strong> <a href="{{ internship.website }}" target="_blank">{{ internship.website }}</a></p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    <button type="button" class="btn btn-success btn-lg me-2" disabled>Apply Now</button> 
+                    <a href="{{ url_for('browse_internships') }}" class="btn btn-secondary btn-lg">Back to Browse</a>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-warning text-center shadow-sm" role="alert">
+                <p class="lead mb-0">Internship details not found.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

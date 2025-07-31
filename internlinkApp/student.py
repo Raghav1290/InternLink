@@ -1,50 +1,111 @@
-from internlinkApp import app
-from internlinkApp import db
-from flask import redirect, render_template, session, url_for
+import os
+from flask import redirect, render_template, session, url_for, request, flash
+from datetime import datetime
+from werkzeug.utils import secure_filename
 
+from internlinkApp import app, db
+from internlinkApp.user import ALLOWED_RESUME_EXTENSIONS, allowed_file
+
+# Student Home Route
 @app.route('/student/home')
 def student_home():
-     """Customer Homepage endpoint.
 
-     Methods:
-     - get: Renders the homepage for the current customer, or an "Access
-          Denied" 403: Forbidden page if the current user has a different role.
-
-     If the user is not logged in, requests will redirect to the login page.
-     """
-     # Note: You'll need to use "logged in" and role checks like the ones below
-     # on every single endpoint that should be restricted to logged-in users,
-     # or users with a certain role. Otherwise, anyone who knows the URL can
-     # access that page.
-     #
-     # In this example we've just repeated the code everywhere (you'll see the
-     # same checks in staff.py and admin.py), but it would be a great idea to
-     # extract these checks into reusable functions. You could place them in
-     # user.py with the rest of the login system, for example, and import them
-     # into other modules as necessary.
-     #
-     # One common way to implement login and role checks in Flask is with "View
-     # Decorators", such as the "login_required" example in the official
-     # tutorial [1]. If you choose to use that approach, you'll need to adapt
-     # it a little to our project, as we don't store the username in `g.user`.
-     #
-     # References:
-     # [1] https://flask.palletsprojects.com/en/stable/patterns/viewdecorators/
-
+     # If User is not logged in then It will be redirected to login
      if 'loggedin' not in session:
-          # The user isn't logged in, so redirect them to the login page.
           return redirect(url_for('login'))
      elif session['role']!='student':
-          # The user isn't logged in with a customer account, so return an
-          # "Access Denied" page instead. We don't do a redirect here, because
-          # we're not sending them somewhere else: just delivering an
-          # alternative page.
-          # 
-          # Note: the '403' below returns HTTP status code 403: Forbidden to the
-          # browser, indicating that the user was not allowed to access the
-          # requested page.
           return render_template('access_denied.html'), 403
 
-     # The user is logged in with a customer account, so render the customer
-     # homepage as requested.
      return render_template('student_home.html')
+
+#Internship Route
+@app.route('/internships', methods=['GET'])
+def browse_internships():
+
+     # If User is not logged in then It will be redirected to login
+     if 'loggedin' not in session:
+          return redirect(url_for('login'))
+     elif session['role'] != 'student':
+          return render_template('access_denied.html'), 403
+
+     internships = [] #Intialized empty list of internships
+     category_filter = request.args.get('category')
+     location_filter = request.args.get('location')
+     duration_filter = request.args.get('duration')
+     stipend_filter = request.args.get('stipend')
+
+     try:
+          with db.get_cursor() as cursor:
+               # Querryinng the internships based on filters and deadlines
+               query = """
+                    SELECT i.internship_id, i.title, i.description, i.location, i.duration,
+                         i.skills_required, i.deadline, i.stipend, i.number_of_opening,
+                         e.company_name, e.logo_path
+                    FROM internship i
+                    JOIN employer e ON i.company_id = e.emp_id
+                    WHERE i.deadline >= CURRENT_DATE()
+               """
+               params = []
+
+               if category_filter:
+                    # Searching within skills_required, title or description for the category
+                    query += " AND (i.title LIKE %s OR i.skills_required LIKE %s OR i.description LIKE %s)"
+                    params.extend([f"%{category_filter}%", f"%{category_filter}%", f"%{category_filter}%"])
+               if location_filter:
+                    query += " AND i.location LIKE %s"
+                    params.append(f"%{location_filter}%")
+               if duration_filter:
+                    query += " AND i.duration LIKE %s"
+                    params.append(f"%{duration_filter}%")
+               if stipend_filter:
+                    query += " AND i.stipend LIKE %s"
+                    params.append(f"%{stipend_filter}%")
+
+               # Ordering it in Ascending order as per the deadlines     
+               query += " ORDER BY i.deadline ASC;" 
+               cursor.execute(query, tuple(params))
+               internships = cursor.fetchall()
+
+     except Exception as e:
+          print(f"Error fetching internships: {e}")
+          return render_template('error.html', error_message="Could not load internships."), 500
+
+
+     return render_template('browse_internships.html',
+                              internships=internships,
+                              selected_category=category_filter,
+                              selected_location=location_filter,
+                              selected_duration=duration_filter,
+                              selected_stipend=stipend_filter)
+
+# Fetching Internship Route
+@app.route('/internship/<int:internship_id>')
+def view_internship_details(internship_id):
+    """View details of a specific internship.
+    Fetches all details including associated company information.
+    """
+    if 'loggedin' not in session:
+        return redirect(url_for('login'))
+    elif session['role'] != 'student': 
+        return render_template('access_denied.html'), 403
+
+    internship_details = None
+    try:
+        with db.get_cursor() as cursor:
+            query = """
+                SELECT i.*, e.company_name, e.company_description, e.website, e.logo_path
+                FROM internship i
+                JOIN employer e ON i.company_id = e.emp_id
+                WHERE i.internship_id = %s;
+            """
+            cursor.execute(query, (internship_id,))
+            internship_details = cursor.fetchone()
+
+        if not internship_details:
+            return render_template('error.html', error_message="Internship not found."), 404
+
+    except Exception as e:
+        print(f"Error fetching internship details: {e}")
+        return render_template('error.html', error_message="Could not load internship details."), 500
+
+    return render_template('internship_details.html', internship=internship_details)

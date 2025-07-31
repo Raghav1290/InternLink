@@ -1,0 +1,78 @@
+{% extends 'userbase.html' %}
+
+{% block title %}Browse Internships{% endblock %}
+
+{% set active_page = 'browse_internships' %}
+
+{% block content %}
+<section class="container py-5">
+    <div class="row justify-content-center text-center">
+        <div class="col-lg-10">
+            <h1>Browse Internships</h1>
+            <p class="lead text-muted">Find great internship opportunities that match your career path and goals.</p>
+        </div>
+    </div>
+
+    <div class="row justify-content-center mb-4">
+        <div class="col-lg-10">
+            <form class="row g-3" method="GET" action="{{ url_for('browse_internships') }}" novalidate>
+                <div class="col-md-3">
+                    <label for="category" class="form-label">Category (e.g., Software, Marketing)</label>
+                    <input type="text" class="form-control" id="category" name="category" value="{{ selected_category if selected_category }}">
+                </div>
+                <div class="col-md-3">
+                    <label for="location" class="form-label">Location (e.g., Auckland, Remote)</label>
+                    <input type="text" class="form-control" id="location" name="location" value="{{ selected_location if selected_location }}">
+                </div>
+                <div class="col-md-3">
+                    <label for="duration" class="form-label">Duration (e.g., 3 months, 6 months)</label>
+                    <input type="text" class="form-control" id="duration" name="duration" value="{{ selected_duration if selected_duration }}">
+                </div>
+                <div class="col-md-3">
+                    <label for="stipend" class="form-label">Stipend (e.g., Paid, Unpaid)</label>
+                    <input type="text" class="form-control" id="stipend" name="stipend" value="{{ selected_stipend if selected_stipend }}">
+                </div>
+                <div class="col-12 text-center">
+                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                    <a href="{{ url_for('browse_internships') }}" class="btn btn-secondary">Clear Filters</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% if internships %}
+            {% for internship in internships %}
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ internship.title }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            {% if internship.logo_path %}
+                                <img src="{{ url_for('static', filename=internship.logo_path) }}" alt="{{ internship.company_name }} Logo" style="height: 24px; vertical-align: middle; margin-right: 5px;">
+                            {% endif %}
+                            {{ internship.company_name }}
+                        </h6>
+                        <p class="card-text text-truncate">{{ internship.description }}</p>
+                        <ul class="list-group list-group-flush mb-3">
+                            <li class="list-group-item"><i class="bi bi-geo-alt-fill me-2"></i>Location: {{ internship.location }}</li>
+                            <li class="list-group-item"><i class="bi bi-clock-fill me-2"></i>Duration: {{ internship.duration }}</li>
+                            <li class="list-group-item"><i class="bi bi-currency-dollar me-2"></i>Stipend: {{ internship.stipend }}</li>
+                            <li class="list-group-item"><i class="bi bi-calendar-check-fill me-2"></i>Deadline: {{ internship.deadline.strftime('%Y-%m-%d') }}</li>
+                        </ul>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="{{ url_for('view_internship_details', internship_id=internship.internship_id) }}" class="btn btn-sm btn-outline-primary">View Details</a>
+                            <button type="button" class="btn btn-sm btn-success" disabled>Apply Now</button> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12 text-center">
+                <p class="lead text-muted">There are no internships that are matching your criteria. Try out clearing filters or come back later!</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
