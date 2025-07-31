@@ -4,6 +4,7 @@ from datetime import datetime
 
 from flask import redirect, render_template, request, session, url_for, flash # Adding flash for displaying error and success messages
 from flask_bcrypt import Bcrypt
+from markupsafe import Markup
 
 from internlinkApp import app, db
 
@@ -97,7 +98,9 @@ def signup():
     username = request.form.get('username')
     email = request.form.get('email')
     password = request.form.get('password')
+    confirm_password = request.form.get('confirm_password')
 
+    # fields for other students 
     full_name = request.form.get('full_name')
     university = request.form.get('university')
     course = request.form.get('course')
@@ -106,6 +109,7 @@ def signup():
     username_error = None
     email_error = None
     password_error = None
+    confirm_password_error = None 
     signup_successful = False
     error_message = None
 
@@ -114,20 +118,23 @@ def signup():
             cursor.execute('SELECT user_id FROM users WHERE username = %s;', (username,))
             account_already_exists = cursor.fetchone() is not None
 
-        if account_already_exists:
-            username_error = 'An account already exists with this username.'
-        elif len(username) > 50:
-            username_error = 'Your username cannot exceed 50 characters.'
-        elif not re.match(r'[A-Za-z0-9]+', username):
+        # Validation for username
+        if not username: username_error = 'Username is required.'
+        elif account_already_exists: username_error = 'An account already exists with this username.'
+        elif len(username) < 3: username_error = 'Your username must be at least 3 characters long.'
+        elif len(username) > 50: username_error = 'Your username cannot exceed 50 characters.'
+        elif not re.match(r'^[A-Za-z0-9]+$', username):
             username_error = 'Your username can only contain letters and numbers.'            
 
-        if len(email) > 100:
-            email_error = 'Your email address cannot exceed 100 characters.'
+        # Validation for email 
+        if not email: email_error = 'Email address is required.'
+        elif len(email) > 100: email_error = 'Your email address cannot exceed 100 characters.'
         elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
             email_error = 'Invalid email address.'
 
-        if len(password) < 8:
-            password_error = 'Please choose a longer password!'
+        # Validation for password
+        if not password: password_error = 'Password is required.'
+        elif len(password) < 8: password_error = 'Password must be at least 8 characters long.'
         elif not re.search(r'[A-Z]', password):
             password_error = 'Password must contain at least one uppercase letter.'
         elif not re.search(r'[a-z]', password):
@@ -137,10 +144,20 @@ def signup():
         elif not re.search(r'[^A-Za-z0-9]', password):
             password_error = 'Password must contain at least one special character.'
 
-        if (username_error or email_error or password_error):
-            return render_template('signup.html', username=username, email=email,
-                                   username_error=username_error, email_error=email_error,
-                                   password_error=password_error)
+        # # Validation for confirm password
+        if password != confirm_password:
+            confirm_password_error = 'Passwords do not match.'
+
+        if (username_error or email_error or password_error or confirm_password_error):
+            return render_template('signup.html',
+                                   username=username,
+                                   email=email,
+                                   password=password,
+                                   confirm_password=confirm_password,
+                                   username_error=username_error,
+                                   email_error=email_error,
+                                   password_error=password_error,
+                                   confirm_password_error=confirm_password_error) 
         else:
             password_hash = flask_bcrypt.generate_password_hash(password)
 
@@ -152,13 +169,16 @@ def signup():
                                 ''',
                                 (username, password_hash, email, DEFAULT_USER_ROLE, 'active'))
                 signup_successful = True
+                flash_message_html = f"You have successfully signed up! Please "
+                flash("You are successfully registered. Please Login...", 'success') 
                 return render_template('signup.html', signup_successful=signup_successful)
             except Exception as e:
                 print(f"Error during signup: {e}")
                 error_message = "An error occurred during registration. Please try again."
                 return render_template('signup.html', username=username, email=email, error_message=error_message)
 
-    return render_template('signup.html')
+    return render_template('signup.html') 
+
 
 # Profile Route
 @app.route('/profile', methods=['GET'])
