@@ -1,0 +1,114 @@
+{% extends 'userbase.html' %}
+
+{% block title %}Apply for Internship{% endblock %}
+
+{% set active_page = 'browse_internships' %} {# Keep browse internships active in nav #}
+
+{% block content %}
+<section class="container py-5">
+    <div class="row justify-content-center text-center">
+        <div class="col-lg-8">
+            <h1>Apply for: {{ internship.title }}</h1>
+            <p class="lead text-muted">Complete the form below to submit your application to {{ internship.company_name }}.</p>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message|safe }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% if application_exists %}
+            <div class="alert alert-warning text-center" role="alert">
+                You have already applied for this internship.
+                <a href="{{ url_for('my_applications') }}" class="alert-link">View your application status</a>.
+            </div>
+            {% endif %}
+
+            <form action="{{ url_for('apply_for_internship', internship_id=internship.internship_id) }}" method="post" enctype="multipart/form-data" novalidate>
+                <h4 class="mb-3">Internship Details</h4>
+                <div class="mb-3">
+                    <label class="form-label">Company Name</label>
+                    <input type="text" class="form-control" value="{{ internship.company_name }}" disabled>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Internship Title</label>
+                    <input type="text" class="form-control" value="{{ internship.title }}" disabled>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" rows="4" disabled>{{ internship.description }}</textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Location</label>
+                    <input type="text" class="form-control" value="{{ internship.location }}" disabled>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Duration</label>
+                    <input type="text" class="form-control" value="{{ internship.duration }}" disabled>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Application Deadline</label>
+                    <input type="text" class="form-control" value="{{ internship.deadline.strftime('%Y-%m-%d') }}" disabled>
+                </div>
+
+                <h4 class="mt-4 mb-3">Your Details (Pre-filled from Profile)</h4>
+                <div class="mb-3">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-control" value="{{ student_profile.full_name }}" disabled>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-control" value="{{ student_profile.email }}" disabled>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">University</label>
+                    <input type="text" class="form-control" value="{{ student_profile.university }}" disabled>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Course</label>
+                    <input type="text" class="form-control" value="{{ student_profile.course }}" disabled>
+                </div>
+
+                <h4 class="mt-4 mb-3">Application Materials</h4>
+                <div class="mb-3">
+                    <label for="resume" class="form-label">Resume (PDF)</label>
+                    {% if student_profile.resume_path %}
+                        <div class="mb-2">
+                            Current: <a href="{{ url_for('static', filename=student_profile.resume_path) }}" target="_blank">View Your Current Resume</a>
+                            <div class="form-check mt-2">
+                                <input class="form-check-input" type="checkbox" id="replace_resume" name="replace_resume" value="true">
+                                <label class="form-check-label" for="replace_resume">Replace current resume with new upload</label>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning" role="alert">
+                            No resume found in your profile. Please upload one here or update your profile.
+                        </div>
+                    {% endif %}
+                    <input type="file" class="form-control{% if form_errors.resume %} is-invalid{% endif %}" id="resume" name="resume" accept=".pdf" {% if not student_profile.resume_path %}required{% endif %}>
+                    <div class="form-text">Upload or replace your resume. Must be a PDF file.</div>
+                    <div class="invalid-feedback">{{ form_errors.resume }}</div>
+                </div>
+                <div class="mb-3">
+                    <label for="cover_letter" class="form-label">Cover Letter / Additional Note (Optional)</label>
+                    <textarea class="form-control" id="cover_letter" name="cover_letter" rows="5" placeholder="Write your cover letter or any additional notes here..."></textarea>
+                </div>
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg" {% if application_exists %}disabled{% endif %}>Submit Application</button>
+                    <a href="{{ url_for('browse_internships') }}" class="btn btn-secondary btn-lg">Back to Internships</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -40,7 +40,7 @@
                     </div>
                 </div>
                 <div class="card-footer text-center">
-                    <button type="button" class="btn btn-success btn-lg me-2" disabled>Apply Now</button> 
+                    <a href="{{ url_for('apply_for_internship', internship_id=internship.internship_id) }}" class="btn btn-success btn-lg me-2">Apply Now</a>
                     <a href="{{ url_for('browse_internships') }}" class="btn btn-secondary btn-lg">Back to Browse</a>
                 </div>
             </div>

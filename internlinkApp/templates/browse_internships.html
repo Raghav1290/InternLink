@@ -9,7 +9,7 @@
     <div class="row justify-content-center text-center">
         <div class="col-lg-10">
             <h1>Browse Internships</h1>
-            <p class="lead text-muted">Find great internship opportunities that match your career path and goals.</p>
+            <p class="lead text-muted">Discover exciting internship opportunities that match your career goals.</p>
         </div>
     </div>
 
@@ -62,7 +62,7 @@
                         </ul>
                         <div class="d-flex justify-content-between align-items-center">
                             <a href="{{ url_for('view_internship_details', internship_id=internship.internship_id) }}" class="btn btn-sm btn-outline-primary">View Details</a>
-                            <button type="button" class="btn btn-sm btn-success" disabled>Apply Now</button> 
+                            <a href="{{ url_for('apply_for_internship', internship_id=internship.internship_id) }}" class="btn btn-sm btn-success">Apply Now</a> {# Activated button #}
                         </div>
                     </div>
                 </div>
@@ -70,7 +70,7 @@
             {% endfor %}
         {% else %}
             <div class="col-12 text-center">
-                <p class="lead text-muted">There are no internships that are matching your criteria. Try out clearing filters or come back later!</p>
+                <p class="lead text-muted">No internships found matching your criteria. Try clearing filters or check back later!</p>
             </div>
         {% endif %}
     </div>
