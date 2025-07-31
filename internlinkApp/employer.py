@@ -2,8 +2,8 @@ from internlinkApp import app
 from internlinkApp import db
 from flask import redirect, render_template, session, url_for
 
-@app.route('/staff/home')
-def staff_home():
+@app.route('/employer/home')
+def employer_home():
      """Staff Homepage endpoint.
 
      Methods:
@@ -14,7 +14,7 @@ def staff_home():
      """
      if 'loggedin' not in session:
           return redirect(url_for('login'))
-     elif session['role']!='staff':
+     elif session['role']!='employer':
           return render_template('access_denied.html'), 403
 
-     return render_template('staff_home.html')
+     return render_template('employer_home.html')

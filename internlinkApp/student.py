@@ -2,8 +2,8 @@ from internlinkApp import app
 from internlinkApp import db
 from flask import redirect, render_template, session, url_for
 
-@app.route('/customer/home')
-def customer_home():
+@app.route('/student/home')
+def student_home():
      """Customer Homepage endpoint.
 
      Methods:
@@ -34,7 +34,7 @@ def customer_home():
      if 'loggedin' not in session:
           # The user isn't logged in, so redirect them to the login page.
           return redirect(url_for('login'))
-     elif session['role']!='customer':
+     elif session['role']!='student':
           # The user isn't logged in with a customer account, so return an
           # "Access Denied" page instead. We don't do a redirect here, because
           # we're not sending them somewhere else: just delivering an
@@ -47,4 +47,4 @@ def customer_home():
 
      # The user is logged in with a customer account, so render the customer
      # homepage as requested.
-     return render_template('customer_home.html')
+     return render_template('student_home.html')
