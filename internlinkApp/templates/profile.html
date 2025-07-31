@@ -2,7 +2,6 @@
 
 {% block title %}User Profile{% endblock %}
 
-{# Set the active page to be highlighted in the navigation bar. #}
 {% set active_page = 'profile' %}
 
 {% block content %}
@@ -14,9 +13,9 @@
         </div>
     </div>
 </section>
-    
+
 <section class="container">
-    <form>
+    <form> 
         <div class="row justify-content-center">
             <div class="col-lg-3 mb-3">
                 <label for="username" class="form-label">Username</label>
@@ -27,11 +26,70 @@
                 <input type="text" class="form-control" id="useremail" name="useremail" value="{{ profile.email }}" disabled>
             </div>
         </div>
-        <div class="my-3 row justify-content-center">
+        <div class="row justify-content-center">
             <div class="col-lg-6">
-                <p>You could make the fields on this form editable, and add buttons to let users save or cancel any changes they make.</p>
-                <hr />
-                <p><small><em>Hint: Remember to think about validation and error handling: for example, what happens if users enter an invalid email address or a username that's already taken?</em></small></p>
+                <hr>
+                {% if profile.full_name %}
+                <div class="mb-3">
+                    <label for="fullname" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="fullname" name="fullname" value="{{ profile.full_name }}" disabled>
+                </div>
+                {% endif %}
+
+                {% if profile.profile_image %}
+                <div class="mb-3 text-center">
+                    <label class="form-label d-block">Profile Image</label>
+                    <img src="{{ url_for('static', filename=profile.profile_image) }}" alt="Profile Image" class="img-thumbnail rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                </div>
+                {% endif %}
+
+                {% if profile.role == 'student' %}
+                    {% if profile.university %}
+                    <div class="mb-3">
+                        <label for="university" class="form-label">University</label>
+                        <input type="text" class="form-control" id="university" name="university" value="{{ profile.university }}" disabled>
+                    </div>
+                    {% endif %}
+                    {% if profile.course %}
+                    <div class="mb-3">
+                        <label for="course" class="form-label">Course</label>
+                        <input type="text" class="form-control" id="course" name="course" value="{{ profile.course }}" disabled>
+                    </div>
+                    {% endif %}
+                    {% if profile.resume_path %}
+                    <div class="mb-3">
+                        <label for="resume" class="form-label">Resume</label>
+                        <a href="{{ url_for('static', filename=profile.resume_path) }}" target="_blank" class="btn btn-sm btn-outline-primary form-control">View Resume</a>
+                    </div>
+                    {% endif %}
+                {% elif profile.role == 'employer' %}
+                    {% if profile.company_name %}
+                    <div class="mb-3">
+                        <label for="company_name" class="form-label">Company Name</label>
+                        <input type="text" class="form-control" id="company_name" name="company_name" value="{{ profile.company_name }}" disabled>
+                    </div>
+                    {% endif %}
+                    {% if profile.company_description %}
+                    <div class="mb-3">
+                        <label for="company_description" class="form-label">Company Description</label>
+                        <textarea class="form-control" id="company_description" name="company_description" rows="5" disabled>{{ profile.company_description }}</textarea>
+                    </div>
+                    {% endif %}
+                    {% if profile.website %}
+                    <div class="mb-3">
+                        <label for="website" class="form-label">Website</label>
+                        <input type="text" class="form-control" id="website" name="website" value="{{ profile.website }}" disabled>
+                    </div>
+                    {% endif %}
+                    {% if profile.logo_path %}
+                    <div class="mb-3 text-center">
+                        <label class="form-label d-block">Company Logo</label>
+                        <img src="{{ url_for('static', filename=profile.logo_path) }}" alt="Company Logo" class="img-thumbnail" style="max-width: 150px; height: auto;">
+                    </div>
+                    {% endif %}
+                {% endif %}
+
+
             </div>
         </div>
     </form>
