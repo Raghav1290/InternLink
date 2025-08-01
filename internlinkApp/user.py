@@ -179,43 +179,173 @@ def signup():
 
     return render_template('signup.html') 
 
-
 # Profile Route
-@app.route('/profile', methods=['GET'])
+@app.route('/profile', methods=['GET', 'POST'])
 def profile():
-    # If the user is not logged in then redirect to login page
     if 'loggedin' not in session:
          return redirect(url_for('login'))
 
     user_id = session['user_id']
     role = session['role']
+    profile_data = {}
+    form_errors = {}
 
-    with db.get_cursor() as cursor:
-        # If the user role is student
-        if role == 'student':
-            cursor.execute('''
-                            SELECT u.username, u.email, u.full_name, u.profile_image, u.role, u.status,
-                                   s.university, s.course, s.resume_path
-                            FROM users u
-                            LEFT JOIN student s ON u.user_id = s.user_id
-                            WHERE u.user_id = %s;
-                            ''', (user_id,))
-        # If the user role is employer
+    def get_user_profile(user_id, role):
+        with db.get_cursor() as cursor:
+            if role == 'student':
+                cursor.execute('''
+                                SELECT u.username, u.email, u.full_name, u.profile_image, u.role, u.status,
+                                       s.university, s.course, s.resume_path
+                                FROM users u
+                                LEFT JOIN student s ON u.user_id = s.user_id
+                                WHERE u.user_id = %s;
+                                ''', (user_id,))
+            elif role == 'employer':
+                cursor.execute('''
+                                SELECT u.username, u.email, u.full_name, u.profile_image, u.role, u.status,
+                                       e.company_name, e.company_description, e.website, e.logo_path
+                                FROM users u
+                                LEFT JOIN employer e ON u.user_id = e.user_id
+                                WHERE u.user_id = %s;
+                                ''', (user_id,))
+            elif role == 'admin':
+                cursor.execute('SELECT username, email, full_name, profile_image, role, status FROM users WHERE user_id = %s;',
+                               (user_id,))
+            return cursor.fetchone()
+
+    if request.method == 'POST':
+        # Fetching data from form submission
+        full_name = request.form.get('full_name')
+        email = request.form.get('email')
+        university = request.form.get('university')
+        course = request.form.get('course')
+        company_name = request.form.get('company_name')
+        company_description = request.form.get('company_description')
+        website = request.form.get('website')
+
+        profile_image_file = request.files.get('profile_image')
+        remove_profile_image = request.form.get('remove_profile_image') == 'true'
+        resume_file = request.files.get('resume')
+        remove_resume = request.form.get('remove_resume') == 'true'
+        logo_file = request.files.get('logo')
+        remove_logo = request.form.get('remove_logo') == 'true'
+
+        current_profile_data = get_user_profile(user_id, role)
+        current_profile_image = current_profile_data['profile_image'] if current_profile_data and 'profile_image' in current_profile_data else None
+        current_resume_path = current_profile_data['resume_path'] if current_profile_data and 'resume_path' in current_profile_data else None
+        current_logo_path = current_profile_data['logo_path'] if current_profile_data and 'logo_path' in current_profile_data else None
+
+        if not full_name: form_errors['full_name'] = "Full name is required."
+        elif len(full_name) > 100: form_errors['full_name'] = "Full name cannot exceed 100 characters."
+
+        if role == 'admin':
+            if not email: form_errors['email'] = "Email is required for Admin profile."
+            elif len(email) > 100: form_errors['email'] = "Email address cannot exceed 100 characters."
+            elif not re.match(r'[^@]+@[^@]+\.[^@]+', email): form_errors['email'] = "Invalid email address."
+
+        elif role == 'student':
+            if not university: form_errors['university'] = "University is required for Student profile."
+            elif len(university) > 100: form_errors['university'] = "University cannot exceed 100 characters."
+            if not course: form_errors['course'] = "Course is required for Student profile."
+            elif len(course) > 100: form_errors['course'] = "Course cannot exceed 100 characters."
+            if resume_file and resume_file.filename != '' and not allowed_file(resume_file.filename, ALLOWED_RESUME_EXTENSIONS):
+                form_errors['resume'] = "Resume must be a PDF file."
+
         elif role == 'employer':
-            cursor.execute('''
-                            SELECT u.username, u.email, u.full_name, u.profile_image, u.role, u.status,
-                                   e.company_name, e.company_description, e.website, e.logo_path
-                            FROM users u
-                            LEFT JOIN employer e ON u.user_id = e.user_id
-                            WHERE u.user_id = %s;
-                            ''', (user_id,))
-        # If the user role is admin
-        elif role == 'admin':
-            cursor.execute('SELECT username, email, full_name, profile_image, role, status FROM users WHERE user_id = %s;',
-                           (user_id,))
-        profile_data = cursor.fetchone()
+            if not company_name: form_errors['company_name'] = "Company name is required for Employer profile."
+            elif len(company_name) > 100: form_errors['company_name'] = "Company name cannot exceed 100 characters."
+            if website and not re.match(r'https?://(?:[-\w.]|(?:%[\da-fA-Z]{2}))+', website): form_errors['website'] = "Please enter a valid company website URL."
+            if logo_file and logo_file.filename != '' and not allowed_file(logo_file.filename, ALLOWED_IMAGE_EXTENSIONS):
+                form_errors['logo'] = "Company logo must be an image file (PNG, JPG, JPEG, GIF)."
 
-    return render_template('profile.html', profile=profile_data)
+        if profile_image_file and profile_image_file.filename != '' and not allowed_file(profile_image_file.filename, ALLOWED_IMAGE_EXTENSIONS):
+            form_errors['profile_image'] = "Profile image must be an image file (PNG, JPG, JPEG, GIF)."
+
+        if form_errors:
+            flash("Please correct the errors in the form.", 'danger')
+            profile_data = {**current_profile_data, **request.form.to_dict()}
+            return render_template('profile.html', profile=profile_data, form_errors=form_errors)
+
+        try:
+            with db.get_cursor() as cursor:
+                update_user_sql = "UPDATE users SET full_name = %s"
+                user_params = [full_name]
+
+                if role == 'admin':
+                    update_user_sql += ", email = %s"
+                    user_params.append(email)
+
+                if remove_profile_image:
+                    update_user_sql += ", profile_image = NULL"
+                    if current_profile_image:
+                        os.remove(os.path.join(app.root_path, 'static', current_profile_image))
+                elif profile_image_file and profile_image_file.filename != '':
+                    upload_folder = os.path.join(app.root_path, 'static', 'uploads')
+                    if not os.path.exists(upload_folder): os.makedirs(upload_folder)
+                    if current_profile_image:
+                        os.remove(os.path.join(app.root_path, 'static', current_profile_image))
+
+                    filename = secure_filename(f"profile_{user_id}_{datetime.now().strftime('%Y%m%d%H%M%S')}{os.path.splitext(profile_image_file.filename)[1]}")
+                    profile_image_file.save(os.path.join(upload_folder, filename))
+                    update_user_sql += ", profile_image = %s"
+                    user_params.append('uploads/' + filename)
+
+                update_user_sql += " WHERE user_id = %s;"
+                user_params.append(user_id)
+                cursor.execute(update_user_sql, tuple(user_params))
+
+                if role == 'student':
+                    if remove_resume:
+                        resume_path_to_db = None
+                        if current_resume_path:
+                            os.remove(os.path.join(app.root_path, 'static', current_resume_path))
+                    elif resume_file and resume_file.filename != '':
+                        upload_folder = os.path.join(app.root_path, 'static', 'uploads')
+                        if not os.path.exists(upload_folder): os.makedirs(upload_folder)
+                        if current_resume_path:
+                            os.remove(os.path.join(app.root_path, 'static', current_resume_path))
+
+                        filename = secure_filename(f"resume_{user_id}_{datetime.now().strftime('%Y%m%d%H%M%S')}.pdf")
+                        resume_file.save(os.path.join(upload_folder, filename))
+                        resume_path_to_db = 'uploads/' + filename
+                    else:
+                        resume_path_to_db = current_resume_path
+
+
+                    cursor.execute("UPDATE student SET university = %s, course = %s, resume_path = %s WHERE user_id = %s;",
+                                   (university, course, resume_path_to_db, user_id))
+
+                elif role == 'employer':
+                    if remove_logo:
+                        logo_path_to_db = None
+                        if current_logo_path:
+                            os.remove(os.path.join(app.root_path, 'static', current_logo_path))
+                    elif logo_file and logo_file.filename != '':
+                        upload_folder = os.path.join(app.root_path, 'static', 'uploads')
+                        if not os.path.exists(upload_folder): os.makedirs(upload_folder)
+                        if current_logo_path:
+                            os.remove(os.path.join(app.root_path, 'static', current_logo_path))
+
+                        filename = secure_filename(f"logo_{user_id}_{datetime.now().strftime('%Y%m%d%H%M%S')}{os.path.splitext(logo_file.filename)[1]}")
+                        logo_file.save(os.path.join(upload_folder, filename))
+                        logo_path_to_db = 'uploads/' + filename
+                    else:
+                        logo_path_to_db = current_logo_path
+
+                    cursor.execute("UPDATE employer SET company_name = %s, company_description = %s, website = %s, logo_path = %s WHERE user_id = %s;",
+                                   (company_name, company_description, website, logo_path_to_db, user_id))
+
+            flash("Profile updated successfully!", 'success')
+            return redirect(url_for('profile'))
+
+        except Exception as e:
+            print(f"Error updating profile: {e}")
+            flash("An unexpected error occurred while updating your profile. Please try again.", 'danger')
+            return redirect(url_for('profile'))
+
+    profile_data = get_user_profile(user_id, role)
+    return render_template('profile.html', profile=profile_data, form_errors=form_errors)
+
 
 # Change Password Route
 @app.route('/change_password', methods=['GET'])
