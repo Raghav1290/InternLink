@@ -2,7 +2,6 @@
 
 {% block title %}Admin Home{% endblock %}
 
-{# Set the active page to be highlighted in the navigation bar. #}
 {% set active_page = 'home' %}
 
 {% block content %}
@@ -11,6 +10,9 @@
         <div class="col-lg-7">
             <h1>Admin Home Page</h1>
             <p class="lead text-muted">This is the page an admin user sees when they first sign in. It should provide quick access to the information and features they're most likely to need when using the app.</p>
+            <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                <a href="{{ url_for('admin_user_management') }}" class="btn btn-primary btn-lg px-4 gap-3">Manage Users</a>
+            </div>
         </div>
     </div>
 </section>

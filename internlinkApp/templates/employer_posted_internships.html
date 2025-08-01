@@ -1,0 +1,61 @@
+{% extends 'userbase.html' %}
+
+{% block title %}Posted Internships{% endblock %}
+
+{% set active_page = 'posted_internships' %}
+
+{% block content %}
+<section class="container py-5">
+    <div class="row justify-content-center text-center">
+        <div class="col-lg-10">
+            <h1>Internships Posted by {{ company_name if company_name else 'Your Organization' }}</h1>
+            <p class="lead text-muted">Here are all the internship opportunities your company has listed on InternLink.</p>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            {% if error_message %}
+                <div class="alert alert-danger" role="alert">{{ error_message }}</div>
+            {% endif %}
+
+            {% if internships %}
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">Title</th>
+                            <th scope="col">Location</th>
+                            <th scope="col">Duration</th>
+                            <th scope="col">Stipend</th>
+                            <th scope="col">Openings</th>
+                            <th scope="col">Deadline</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for internship in internships %}
+                        <tr>
+                            <td>{{ internship.title }}</td>
+                            <td>{{ internship.location }}</td>
+                            <td>{{ internship.duration }}</td>
+                            <td>{{ internship.stipend }}</td>
+                            <td>{{ internship.number_of_opening }}</td>
+                            <td>{{ internship.deadline.strftime('%Y-%m-%d') }}</td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-info" disabled>View Applications</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info text-center" role="alert">
+                Your organization has not posted any internships yet. Please contact an administrator to add new internship listings.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,16 +1,19 @@
 {% extends 'userbase.html' %}
 
-{% block title %}Staff Home{% endblock %}
+{% block title %}Employer Home{% endblock %}
 
-{# Set the active page to be highlighted in the navigation bar. #}
 {% set active_page = 'home' %}
 
 {% block content %}
 <section class="container py-5 text-center">
     <div class="row justify-content-center">
         <div class="col-lg-7">
-            <h1>Staff Home Page</h1>
-            <p class="lead text-muted">This is the page a staff member sees when they first sign in. It should provide quick access to the information and features they're most likely to need when using the app.</p>
+            <h1 class="display-4 fw-bold mb-4">Welcome, {{ session['username'] }}!</h1>
+            <p class="lead text-muted mb-5">This is your employer dashboard for InternLink. Here you can manage your posted internships and review student applications.</p>
+            <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                <a href="{{ url_for('employer_posted_internships') }}" class="btn btn-primary btn-lg px-4 gap-3">View Posted Internships</a>
+                <a href="{{ url_for('employer_manage_applications') }}" class="btn btn-secondary btn-lg px-4">Manage All Applications</a>
+            </div>
         </div>
     </div>
 </section>
