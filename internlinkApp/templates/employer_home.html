@@ -9,10 +9,10 @@
     <div class="row justify-content-center">
         <div class="col-lg-7">
             <h1 class="display-4 fw-bold mb-4">Welcome, {{ session['username'] }}!</h1>
-            <p class="lead text-muted mb-5">This is your employer dashboard for InternLink. Here you can manage your posted internships and review student applications.</p>
-            <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
-                <a href="{{ url_for('employer_posted_internships') }}" class="btn btn-primary btn-lg px-4 gap-3">View Posted Internships</a>
-                <a href="{{ url_for('employer_manage_applications') }}" class="btn btn-secondary btn-lg px-4">Manage All Applications</a>
+            <p class="lead text-muted mb-5">This is your employer dashboard for InternLink. Here you can manage your posted internships and review student applications.</p> 
+            <div class="d-grid gap-3 d-sm-flex justify-content-sm-center"> 
+                <a href="{{ url_for('employer_posted_internships') }}" class="btn btn-primary btn-lg px-4 gap-3">View Posted Internships</a> 
+                <a href="{{ url_for('employer_manage_applications') }}" class="btn btn-outline-secondary btn-lg px-4">Manage All Applications</a> 
             </div>
         </div>
     </div>

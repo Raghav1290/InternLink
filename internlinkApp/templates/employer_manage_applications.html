@@ -15,43 +15,56 @@
 
     <div class="row justify-content-center mb-4">
         <div class="col-lg-10">
-            <form class="row g-3 align-items-end" method="GET" action="{{ url_for('employer_manage_applications') }}" novalidate>
-                <div class="col-md-4">
-                    <label for="applicant_name" class="form-label">Search by Applicant Name</label>
-                    <input type="text" class="form-control" id="applicant_name" name="applicant_name" value="{{ search_applicant if search_applicant }}">
+            <div class="card shadow-sm p-3">
+                <form class="row g-3 align-items-end" method="GET" action="{{ url_for('employer_manage_applications') }}" novalidate>
+                    <div class="col-md-4">
+                        <label for="applicant_name" class="form-label">Search by Applicant Name</label>
+                        <input type="text" class="form-control" id="applicant_name" name="applicant_name" value="{{ search_applicant if search_applicant }}">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="internship_title" class="form-label">Search by Internship Title</label>
+                        <input type="text" class="form-control" id="internship_title" name="internship_title" value="{{ search_internship_title if search_internship_title }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="status" class="form-label">Filter by Status</label>
+                        <select class="form-select" id="status" name="status">
+                            <option value="all" {% if filter_status == 'all' %}selected{% endif %}>All</option>
+                            <option value="Pending" {% if filter_status == 'Pending' %}selected{% endif %}>Pending</option>
+                            <option value="Accepted" {% if filter_status == 'Accepted' %}selected{% endif %}>Accepted</option>
+                            <option value="Rejected" {% if filter_status == 'Rejected' %}selected{% endif %}>Rejected</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                    </div>
+                </form>
+                <div class="text-center mt-2">
+                    <a href="{{ url_for('employer_manage_applications') }}" class="btn btn-secondary btn-sm">Clear Filters</a>
                 </div>
-                <div class="col-md-4">
-                    <label for="internship_title" class="form-label">Search by Internship Title</label>
-                    <input type="text" class="form-control" id="internship_title" name="internship_title" value="{{ search_internship_title if search_internship_title }}">
-                </div>
-                <div class="col-md-2">
-                    <label for="status" class="form-label">Filter by Status</label>
-                    <select class="form-select" id="status" name="status">
-                        <option value="all" {% if filter_status == 'all' %}selected{% endif %}>All</option>
-                        <option value="Pending" {% if filter_status == 'Pending' %}selected{% endif %}>Pending</option>
-                        <option value="Accepted" {% if filter_status == 'Accepted' %}selected{% endif %}>Accepted</option>
-                        <option value="Rejected" {% if filter_status == 'Rejected' %}selected{% endif %}>Rejected</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
-                </div>
-            </form>
-            <div class="text-center mt-2">
-                <a href="{{ url_for('employer_manage_applications') }}" class="btn btn-secondary btn-sm">Clear Filters</a>
             </div>
         </div>
     </div>
 
     <div class="row justify-content-center">
         <div class="col-lg-10">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message|safe }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
             {% if error_message %}
                 <div class="alert alert-danger" role="alert">{{ error_message }}</div>
             {% endif %}
 
             {% if applications %}
-            <div class="table-responsive">
-                <table class="table table-hover table-striped">
+            <div class="table-responsive shadow-sm rounded">
+                <table class="table table-hover table-striped mb-0">
                     <thead class="table-dark">
                         <tr>
                             <th scope="col">Internship Title</th>
@@ -91,7 +104,15 @@
                             </td>
                             <td>{{ app.feedback if app.feedback else 'N/A' }}</td>
                             <td>
-                                <button type="button" class="btn btn-sm btn-primary" disabled>Update Status</button>
+                                <form action="{{ url_for('employer_update_application_status', student_id=app.student_id, internship_id=app.internship_id) }}" method="post" class="d-flex flex-column gap-1">
+                                    <select class="form-select form-select-sm" name="status">
+                                        <option value="Pending" {% if app.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                        <option value="Accepted" {% if app.status == 'Accepted' %}selected{% endif %}>Accept</option>
+                                        <option value="Rejected" {% if app.status == 'Rejected' %}selected{% endif %}>Reject</option>
+                                    </select>
+                                    <textarea class="form-control form-control-sm mt-1" name="feedback" rows="2" placeholder="Optional feedback">{{ app.feedback }}</textarea>
+                                    <button type="submit" class="btn btn-sm btn-primary mt-1">Update</button>
+                                </form>
                             </td>
                         </tr>
                         {% endfor %}

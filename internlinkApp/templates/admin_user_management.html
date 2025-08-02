@@ -15,34 +15,36 @@
 
     <div class="row justify-content-center mb-4">
         <div class="col-lg-10">
-            <form class="row g-3 align-items-end" method="GET" action="{{ url_for('admin_user_management') }}" novalidate>
-                <div class="col-md-4">
-                    <label for="name" class="form-label">Search by Full Name</label>
-                    <input type="text" class="form-control" id="name" name="name" value="{{ search_name if search_name }}">
+            <div class="card shadow-sm p-3">
+                <form class="row g-3 align-items-end" method="GET" action="{{ url_for('admin_user_management') }}" novalidate>
+                    <div class="col-md-4">
+                        <label for="name" class="form-label">Search by Full Name</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ search_name if search_name }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="role" class="form-label">Filter by Role</label>
+                        <select class="form-select" id="role" name="role">
+                            <option value="all" {% if filter_role == 'all' %}selected{% endif %}>All Roles</option>
+                            <option value="student" {% if filter_role == 'student' %}selected{% endif %}>Student</option>
+                            <option value="employer" {% if filter_role == 'employer' %}selected{% endif %}>Employer</option>
+                            <option value="admin" {% if filter_role == 'admin' %}selected{% endif %}>Admin</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="status" class="form-label">Filter by Status</label>
+                        <select class="form-select" id="status" name="status">
+                            <option value="all" {% if filter_status == 'all' %}selected{% endif %}>All Statuses</option>
+                            <option value="active" {% if filter_status == 'active' %}selected{% endif %}>Active</option>
+                            <option value="inactive" {% if filter_status == 'inactive' %}selected{% endif %}>Inactive</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                    </div>
+                </form>
+                <div class="text-center mt-2">
+                    <a href="{{ url_for('admin_user_management') }}" class="btn btn-secondary btn-sm">Clear Filters</a>
                 </div>
-                <div class="col-md-3">
-                    <label for="role" class="form-label">Filter by Role</label>
-                    <select class="form-select" id="role" name="role">
-                        <option value="all" {% if filter_role == 'all' %}selected{% endif %}>All Roles</option>
-                        <option value="student" {% if filter_role == 'student' %}selected{% endif %}>Student</option>
-                        <option value="employer" {% if filter_role == 'employer' %}selected{% endif %}>Employer</option>
-                        <option value="admin" {% if filter_role == 'admin' %}selected{% endif %}>Admin</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label for="status" class="form-label">Filter by Status</label>
-                    <select class="form-select" id="status" name="status">
-                        <option value="all" {% if filter_status == 'all' %}selected{% endif %}>All Statuses</option>
-                        <option value="active" {% if filter_status == 'active' %}selected{% endif %}>Active</option>
-                        <option value="inactive" {% if filter_status == 'inactive' %}selected{% endif %}>Inactive</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
-                </div>
-            </form>
-            <div class="text-center mt-2">
-                <a href="{{ url_for('admin_user_management') }}" class="btn btn-secondary btn-sm">Clear Filters</a>
             </div>
         </div>
     </div>
@@ -65,8 +67,8 @@
             {% endif %}
 
             {% if users %}
-            <div class="table-responsive">
-                <table class="table table-hover table-striped">
+            <div class="table-responsive shadow-sm rounded">
+                <table class="table table-hover table-striped mb-0">
                     <thead class="table-dark">
                         <tr>
                             <th scope="col">User ID</th>

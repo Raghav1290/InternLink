@@ -15,13 +15,20 @@
 
     <div class="row justify-content-center">
         <div class="col-lg-10">
-            {% if error_message %}
-                <div class="alert alert-danger" role="alert">{{ error_message }}</div>
-            {% endif %}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message|safe }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
 
             {% if internships %}
-            <div class="table-responsive">
-                <table class="table table-hover table-striped">
+            <div class="table-responsive shadow-sm rounded"> 
+                <table class="table table-hover table-striped mb-0"> 
                     <thead class="table-dark">
                         <tr>
                             <th scope="col">Title</th>
@@ -39,11 +46,17 @@
                             <td>{{ internship.title }}</td>
                             <td>{{ internship.location }}</td>
                             <td>{{ internship.duration }}</td>
-                            <td>{{ internship.stipend }}</td>
+                            <td>
+                                {% if internship.stipend == 'Paid' %}
+                                    <span class="badge bg-success p-2 rounded-pill">{{ internship.stipend }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary p-2 rounded-pill">{{ internship.stipend }}</span>
+                                {% endif %}
+                            </td>
                             <td>{{ internship.number_of_opening }}</td>
                             <td>{{ internship.deadline.strftime('%Y-%m-%d') }}</td>
                             <td>
-                                <button type="button" class="btn btn-sm btn-info" disabled>View Applications</button>
+                                <a href="{{ url_for('employer_manage_applications', internship_title=internship.title) }}" class="btn btn-sm btn-info">View Applications</a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -51,7 +64,7 @@
                 </table>
             </div>
             {% else %}
-            <div class="alert alert-info text-center" role="alert">
+            <div class="alert alert-info text-center shadow-sm" role="alert">
                 Your organization has not posted any internships yet. Please contact an administrator to add new internship listings.
             </div>
             {% endif %}
