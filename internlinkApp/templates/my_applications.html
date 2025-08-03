@@ -8,53 +8,45 @@
 <section class="container py-5">
     <div class="row justify-content-center text-center">
         <div class="col-lg-10">
-            <h1 class="mb-3">My Internship Applications</h1>
+            <h1>My Internship Applications</h1>
             <p class="lead text-muted">Here's the status of all the internships you've applied for.</p>
         </div>
     </div>
 
     <div class="row justify-content-center">
         <div class="col-lg-10">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                            {{ message|safe }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
 
             {% if applications %}
-            <div class="table-responsive shadow-sm rounded"> 
-                <table class="table table-hover table-striped mb-0"> 
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
                     <thead class="table-dark">
                         <tr>
                             <th scope="col">Internship Title</th>
                             <th scope="col">Company</th>
                             <th scope="col">Location</th>
                             <th scope="col">Status</th>
+                            <th scope="col">Cover Letter</th>
                             <th scope="col">Feedback</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for app in applications %}
                         <tr>
-                            <td><a href="{{ url_for('view_internship_details', internship_id=app.internship_id) }}" class="text-primary fw-bold text-decoration-none">{{ app.internship_title }}</a></td> 
+                            <td><a href="{{ url_for('view_internship_details', internship_id=app.internship_id) }}">{{ app.internship_title }}</a></td>
                             <td>{{ app.company_name }}</td>
                             <td>{{ app.internship_location }}</td>
                             <td>
                                 {% if app.status == 'Pending' %}
-                                    <span class="badge bg-secondary p-2 rounded-pill">{{ app.status }}</span>
+                                    <span class="badge bg-secondary">{{ app.status }}</span>
                                 {% elif app.status == 'Accepted' %}
-                                    <span class="badge bg-success p-2 rounded-pill">{{ app.status }}</span>
+                                    <span class="badge bg-success">{{ app.status }}</span>
                                 {% elif app.status == 'Rejected' %}
-                                    <span class="badge bg-danger p-2 rounded-pill">{{ app.status }}</span>
+                                    <span class="badge bg-danger">{{ app.status }}</span>
                                 {% else %}
-                                    <span class="badge bg-info p-2 rounded-pill">{{ app.status }}</span>
+                                    <span class="badge bg-info">{{ app.status }}</span>
                                 {% endif %}
                             </td>
+                            <td>{{ app.cover_letter if app.cover_letter else 'N/A' }}</td>
                             <td>{{ app.feedback if app.feedback else 'N/A' }}</td>
                         </tr>
                         {% endfor %}
@@ -62,8 +54,8 @@
                 </table>
             </div>
             {% else %}
-            <div class="alert alert-info text-center shadow-sm" role="alert">
-                <p class="lead mb-0">You haven't applied for any internships yet. <a href="{{ url_for('browse_internships') }}" class="alert-link fw-bold">Browse available internships</a> to get started!</p> 
+            <div class="alert alert-info text-center" role="alert">
+                You have not applied for any internships till now. <a href="{{ url_for('browse_internships') }}">Browse the available internships</a> to get started!
             </div>
             {% endif %}
         </div>

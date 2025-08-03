@@ -1,114 +1,104 @@
-{% extends 'userbase.html' %}
+    {% extends 'userbase.html' %}
 
-{% block title %}User Management{% endblock %}
+    {% block title %}User Management{% endblock %}
 
-{% set active_page = 'user_management' %}
+    {% set active_page = 'user_management' %}
 
-{% block content %}
-<section class="container py-5">
-    <div class="row justify-content-center text-center">
-        <div class="col-lg-10">
-            <h1>User Management</h1>
-            <p class="lead text-muted">View and manage all user accounts in InternLink.</p>
+    {% block content %}
+    <section class="container py-5">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-10">
+                <h1>User Management</h1>
+                <p class="lead text-muted">View and manage all user accounts in InternLink.</p>
+            </div>
         </div>
-    </div>
 
-    <div class="row justify-content-center mb-4">
-        <div class="col-lg-10">
-            <div class="card shadow-sm p-3">
-                <form class="row g-3 align-items-end" method="GET" action="{{ url_for('admin_user_management') }}" novalidate>
-                    <div class="col-md-4">
-                        <label for="name" class="form-label">Search by Full Name</label>
-                        <input type="text" class="form-control" id="name" name="name" value="{{ search_name if search_name }}">
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-10">
+                <div class="card shadow-sm p-3">
+                    <form class="row g-3 align-items-end" method="GET" action="{{ url_for('admin_user_management') }}" novalidate>
+                        <div class="col-md-4">
+                            <label for="name" class="form-label">Search by Full Name</label>
+                            <input type="text" class="form-control" id="name" name="name" value="{{ search_name if search_name }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="role" class="form-label">Filter by Role</label>
+                            <select class="form-select" id="role" name="role">
+                                <option value="all" {% if filter_role == 'all' %}selected{% endif %}>All Roles</option>
+                                <option value="student" {% if filter_role == 'student' %}selected{% endif %}>Student</option>
+                                <option value="employer" {% if filter_role == 'employer' %}selected{% endif %}>Employer</option>
+                                <option value="admin" {% if filter_role == 'admin' %}selected{% endif %}>Admin</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="status" class="form-label">Filter by Status</label>
+                            <select class="form-select" id="status" name="status">
+                                <option value="all" {% if filter_status == 'all' %}selected{% endif %}>All Statuses</option>
+                                <option value="active" {% if filter_status == 'active' %}selected{% endif %}>Active</option>
+                                <option value="inactive" {% if filter_status == 'inactive' %}selected{% endif %}>Inactive</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                        </div>
+                    </form>
+                    <div class="text-center mt-2">
+                        <a href="{{ url_for('admin_user_management') }}" class="btn btn-secondary btn-sm">Clear Filters</a>
                     </div>
-                    <div class="col-md-3">
-                        <label for="role" class="form-label">Filter by Role</label>
-                        <select class="form-select" id="role" name="role">
-                            <option value="all" {% if filter_role == 'all' %}selected{% endif %}>All Roles</option>
-                            <option value="student" {% if filter_role == 'student' %}selected{% endif %}>Student</option>
-                            <option value="employer" {% if filter_role == 'employer' %}selected{% endif %}>Employer</option>
-                            <option value="admin" {% if filter_role == 'admin' %}selected{% endif %}>Admin</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="status" class="form-label">Filter by Status</label>
-                        <select class="form-select" id="status" name="status">
-                            <option value="all" {% if filter_status == 'all' %}selected{% endif %}>All Statuses</option>
-                            <option value="active" {% if filter_status == 'active' %}selected{% endif %}>Active</option>
-                            <option value="inactive" {% if filter_status == 'inactive' %}selected{% endif %}>Inactive</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
-                    </div>
-                </form>
-                <div class="text-center mt-2">
-                    <a href="{{ url_for('admin_user_management') }}" class="btn btn-secondary btn-sm">Clear Filters</a>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                            {{ message|safe }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    {% endfor %}
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+
+                {% if error_message %}
+                    <div class="alert alert-danger" role="alert">{{ error_message }}</div>
                 {% endif %}
-            {% endwith %}
 
-            {% if error_message %}
-                <div class="alert alert-danger" role="alert">{{ error_message }}</div>
-            {% endif %}
-
-            {% if users %}
-            <div class="table-responsive shadow-sm rounded">
-                <table class="table table-hover table-striped mb-0">
-                    <thead class="table-dark">
-                        <tr>
-                            <th scope="col">User ID</th>
-                            <th scope="col">Username</th>
-                            <th scope="col">Full Name</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Role</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for user in users %}
-                        <tr>
-                            <td>{{ user.user_id }}</td>
-                            <td>{{ user.username }}</td>
-                            <td>{{ user.full_name if user.full_name else 'N/A' }}</td>
-                            <td>{{ user.email }}</td>
-                            <td><span class="badge {% if user.role == 'admin' %}bg-danger{% elif user.role == 'employer' %}bg-info{% else %}bg-success{% endif %}">{{ user.role.title() }}</span></td>
-                            <td><span class="badge {% if user.status == 'active' %}bg-success{% else %}bg-warning{% endif %}">{{ user.status.title() }}</span></td>
-                            <td>
-                                <form action="{{ url_for('admin_change_user_status', user_id=user.user_id) }}" method="post" class="d-inline">
-                                    <select class="form-select form-select-sm d-inline w-auto me-2" name="status" onchange="this.form.submit()">
-                                        <option value="active" {% if user.status == 'active' %}selected{% endif %}>Active</option>
-                                        <option value="inactive" {% if user.status == 'inactive' %}selected{% endif %}>Inactive</option>
-                                    </select>
-                                </form>
-                                <a href="{{ url_for('profile') }}" class="btn btn-sm btn-outline-secondary">View Profile</a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                {% if users %}
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                        <thead class="table-dark">
+                            <tr>
+                                <th scope="col">User ID</th>
+                                <th scope="col">Username</th>
+                                <th scope="col">Full Name</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Role</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr>
+                                <td>{{ user.user_id }}</td>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.full_name if user.full_name else 'N/A' }}</td>
+                                <td>{{ user.email }}</td>
+                                <td><span class="badge {% if user.role == 'admin' %}bg-danger{% elif user.role == 'employer' %}bg-info{% else %}bg-success{% endif %}">{{ user.role.title() }}</span></td>
+                                <td><span class="badge {% if user.status == 'active' %}bg-success{% else %}bg-warning{% endif %}">{{ user.status.title() }}</span></td>
+                                <td>
+                                    <form action="{{ url_for('admin_change_user_status', user_id=user.user_id) }}" method="post" class="d-inline">
+                                        <select class="form-select form-select-sm d-inline w-auto me-2" name="status" onchange="this.form.submit()">
+                                            <option value="active" {% if user.status == 'active' %}selected{% endif %}>Active</option>
+                                            <option value="inactive" {% if user.status == 'inactive' %}selected{% endif %}>Inactive</option>
+                                        </select>
+                                    </form>
+                                    <a href="{{ url_for('profile', user_id=user.user_id) }}" class="btn btn-sm btn-outline-secondary">View Profile</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info text-center" role="alert">
+                    No users found matching your criteria.
+                </div>
+                {% endif %}
             </div>
-            {% else %}
-            <div class="alert alert-info text-center" role="alert">
-                No users found matching your criteria.
-            </div>
-            {% endif %}
         </div>
-    </div>
-</section>
-{% endblock %}
+    </section>
+    {% endblock %}

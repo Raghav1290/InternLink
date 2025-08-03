@@ -19,11 +19,21 @@
                 <form class="row g-3 align-items-end" method="GET" action="{{ url_for('employer_manage_applications') }}" novalidate>
                     <div class="col-md-4">
                         <label for="applicant_name" class="form-label">Search by Applicant Name</label>
-                        <input type="text" class="form-control" id="applicant_name" name="applicant_name" value="{{ search_applicant if search_applicant }}">
+                        <select class="form-select" id="applicant_name" name="applicant_name">
+                            <option value="all" {% if search_applicant == 'all' %}selected{% endif %}>All Applicants</option>
+                            {% for applicant in applicants %}
+                                <option value="{{ applicant }}" {% if search_applicant == applicant %}selected{% endif %}>{{ applicant }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div class="col-md-4">
                         <label for="internship_title" class="form-label">Search by Internship Title</label>
-                        <input type="text" class="form-control" id="internship_title" name="internship_title" value="{{ search_internship_title if search_internship_title }}">
+                        <select class="form-select" id="internship_title" name="internship_title">
+                            <option value="all" {% if search_internship_title == 'all' %}selected{% endif %}>All Internships</option>
+                            {% for title in internship_titles %}
+                                <option value="{{ title }}" {% if search_internship_title == title %}selected{% endif %}>{{ title }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div class="col-md-2">
                         <label for="status" class="form-label">Filter by Status</label>
@@ -43,88 +53,79 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                            {{ message|safe }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    {% endfor %}
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+
+                {% if error_message %}
+                    <div class="alert alert-danger" role="alert">{{ error_message }}</div>
                 {% endif %}
-            {% endwith %}
 
-            {% if error_message %}
-                <div class="alert alert-danger" role="alert">{{ error_message }}</div>
-            {% endif %}
-
-            {% if applications %}
-            <div class="table-responsive shadow-sm rounded">
-                <table class="table table-hover table-striped mb-0">
-                    <thead class="table-dark">
-                        <tr>
-                            <th scope="col">Internship Title</th>
-                            <th scope="col">Applicant Name</th>
-                            <th scope="col">Applicant Email</th>
-                            <th scope="col">University / Course</th>
-                            <th scope="col">Resume</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Feedback</th>
-                            <th scope="col">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for app in applications %}
-                        <tr>
-                            <td>{{ app.internship_title }}</td>
-                            <td>{{ app.student_full_name }}</td>
-                            <td>{{ app.student_email }}</td>
-                            <td>{{ app.university }} / {{ app.course }}</td>
-                            <td>
-                                {% if app.resume_path %}
-                                <a href="{{ url_for('static', filename=app.resume_path) }}" target="_blank" class="btn btn-sm btn-outline-info">View Resume</a>
-                                {% else %}
-                                N/A
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if app.status == 'Pending' %}
-                                    <span class="badge bg-secondary">{{ app.status }}</span>
-                                {% elif app.status == 'Accepted' %}
-                                    <span class="badge bg-success">{{ app.status }}</span>
-                                {% elif app.status == 'Rejected' %}
-                                    <span class="badge bg-danger">{{ app.status }}</span>
-                                {% else %}
-                                    <span class="badge bg-info">{{ app.status }}</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ app.feedback if app.feedback else 'N/A' }}</td>
-                            <td>
-                                <form action="{{ url_for('employer_update_application_status', student_id=app.student_id, internship_id=app.internship_id) }}" method="post" class="d-flex flex-column gap-1">
-                                    <select class="form-select form-select-sm" name="status">
-                                        <option value="Pending" {% if app.status == 'Pending' %}selected{% endif %}>Pending</option>
-                                        <option value="Accepted" {% if app.status == 'Accepted' %}selected{% endif %}>Accept</option>
-                                        <option value="Rejected" {% if app.status == 'Rejected' %}selected{% endif %}>Reject</option>
-                                    </select>
-                                    <textarea class="form-control form-control-sm mt-1" name="feedback" rows="2" placeholder="Optional feedback">{{ app.feedback }}</textarea>
-                                    <button type="submit" class="btn btn-sm btn-primary mt-1">Update</button>
-                                </form>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                {% if applications %}
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                        <thead class="table-dark">
+                            <tr>
+                                <th scope="col">Internship Title</th>
+                                <th scope="col">Applicant Name</th>
+                                <th scope="col">Applicant Email</th>
+                                <th scope="col">University / Course</th>
+                                <th scope="col">Resume</th>
+                                <th scope="col">Cover Letter</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Feedback</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for app in applications %}
+                            <tr>
+                                <td>{{ app.internship_title }}</td>
+                                <td>{{ app.student_full_name }}</td>
+                                <td>{{ app.student_email }}</td>
+                                <td>{{ app.university }} / {{ app.course }}</td>
+                                <td>
+                                    {% if app.resume_path %}
+                                    <a href="{{ url_for('static', filename=app.resume_path) }}" target="_blank" class="btn btn-sm btn-outline-info">View Resume</a>
+                                    {% else %}
+                                    N/A
+                                    {% endif %}
+                                </td>
+                                <td>{{ app.cover_letter if app.cover_letter else 'N/A' }}</td>
+                                <td>
+                                    {% if app.status == 'Pending' %}
+                                        <span class="badge bg-secondary">{{ app.status }}</span>
+                                    {% elif app.status == 'Accepted' %}
+                                        <span class="badge bg-success">{{ app.status }}</span>
+                                    {% elif app.status == 'Rejected' %}
+                                        <span class="badge bg-danger">{{ app.status }}</span>
+                                    {% else %}
+                                        <span class="badge bg-info">{{ app.status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ app.feedback if app.feedback else 'N/A' }}</td>
+                                <td>
+                                    <form action="{{ url_for('employer_update_application_status', student_id=app.student_id, internship_id=app.internship_id) }}" method="post" class="d-flex flex-column gap-1">
+                                        <select class="form-select form-select-sm" name="status">
+                                            <option value="Pending" {% if app.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                            <option value="Accepted" {% if app.status == 'Accepted' %}selected{% endif %}>Accept</option>
+                                            <option value="Rejected" {% if app.status == 'Rejected' %}selected{% endif %}>Reject</option>
+                                        </select>
+                                        <textarea class="form-control form-control-sm mt-1" name="feedback" rows="2" placeholder="Optional feedback">{{ app.feedback }}</textarea>
+                                        <button type="submit" class="btn btn-sm btn-primary mt-1">Update</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info text-center" role="alert">
+                    No applications found for your internships matching the current filters.
+                </div>
+                {% endif %}
             </div>
-            {% else %}
-            <div class="alert alert-info text-center" role="alert">
-                No applications found for your internships matching the current filters.
-            </div>
-            {% endif %}
         </div>
-    </div>
-</section>
-{% endblock %}
+    </section>
+    {% endblock %}

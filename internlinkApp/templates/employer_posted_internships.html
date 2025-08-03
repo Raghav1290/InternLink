@@ -2,6 +2,7 @@
 
 {% block title %}Posted Internships{% endblock %}
 
+{# Set the active page to be highlighted in the navigation bar. #}
 {% set active_page = 'posted_internships' %}
 
 {% block content %}
@@ -9,26 +10,20 @@
     <div class="row justify-content-center text-center">
         <div class="col-lg-10">
             <h1>Internships Posted by {{ company_name if company_name else 'Your Organization' }}</h1>
-            <p class="lead text-muted">Here are all the internship opportunities your company has listed on InternLink.</p>
+            <p class="lead text-muted">These are all the available internship opportunities that your company has listed on InternLink.</p>
         </div>
     </div>
 
     <div class="row justify-content-center">
         <div class="col-lg-10">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                            {{ message|safe }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
+
+            {% if error_message %}
+                <div class="alert alert-danger" role="alert">{{ error_message }}</div>
+            {% endif %}
 
             {% if internships %}
-            <div class="table-responsive shadow-sm rounded"> 
-                <table class="table table-hover table-striped mb-0"> 
+            <div class="table-responsive shadow-sm rounded">
+                <table class="table table-hover table-striped mb-0">
                     <thead class="table-dark">
                         <tr>
                             <th scope="col">Title</th>
@@ -37,6 +32,7 @@
                             <th scope="col">Stipend</th>
                             <th scope="col">Openings</th>
                             <th scope="col">Deadline</th>
+                            <th scope="col">Applications</th>
                             <th scope="col">Actions</th>
                         </tr>
                     </thead>
@@ -55,6 +51,7 @@
                             </td>
                             <td>{{ internship.number_of_opening }}</td>
                             <td>{{ internship.deadline.strftime('%Y-%m-%d') }}</td>
+                            <td>{{ internship.application_count }}</td>
                             <td>
                                 <a href="{{ url_for('employer_manage_applications', internship_title=internship.title) }}" class="btn btn-sm btn-info">View Applications</a>
                             </td>
@@ -65,7 +62,7 @@
             </div>
             {% else %}
             <div class="alert alert-info text-center shadow-sm" role="alert">
-                Your organization has not posted any internships yet. Please contact an administrator to add new internship listings.
+                Your organization have not posted any internships yet. Please contact an administrator to add new internship listings.
             </div>
             {% endif %}
         </div>

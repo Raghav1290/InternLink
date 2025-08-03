@@ -1,9 +1,21 @@
+""" This module manages all InternLink admin-specific features.
+
+It specifies how to view the admin homepage, among other things.
+Overseeing every user in the system, including account status changes, filtering, and searching.
+"""
+
 from internlinkApp import app, db
 from flask import redirect, render_template, session, url_for, request, flash
 
 # Admin Home ROute
 @app.route('/admin/home')
 def admin_home():
+     """ This is the admin homepage's endpoint.
+
+    takes people who aren't logged in to the login page.
+    prevents users who are not administrators from gaining access.
+    """
+     
      if 'loggedin' not in session:
           return redirect(url_for('login'))
      elif session['role']!='admin':
@@ -14,6 +26,13 @@ def admin_home():
 # Admin User Management Route
 @app.route('/admin/users', methods=['GET'])
 def admin_user_management():
+    """
+    endpoint for managing admin users.
+
+    gives administrators access to a searchable and filterable list of all user accounts.
+
+    Returns: str: The user management page that was rendered.
+    """
     if 'loggedin' not in session:
         return redirect(url_for('login'))
     elif session['role'] != 'admin':
@@ -32,7 +51,6 @@ def admin_user_management():
             query = "SELECT user_id, username, full_name, email, role, status FROM users WHERE 1=1"
             params = []
 
-            # Applying filters
             if search_name:
                 query += " AND full_name LIKE %s"
                 params.append(f"%{search_name}%")
@@ -61,6 +79,12 @@ def admin_user_management():
 # Route for Admin User Management
 @app.route('/admin/users/<int:user_id>/change_status', methods=['POST'])
 def admin_change_user_status(user_id):
+    """ Endpoint for modifying the active/inactive status of a user's account.
+
+    Args: user_id (int): The user's ID whose status has to be modified.
+
+    Returns: str: A flash message directing the user to the management page [
+    """
     if 'loggedin' not in session:
         return redirect(url_for('login'))
     elif session['role'] != 'admin':
@@ -68,7 +92,7 @@ def admin_change_user_status(user_id):
 
     new_status = request.form.get('status')
 
-    # Preventing the admin no to deactivate their own user account
+    # Disabling the admin nto to deactivate their own user account
     if user_id == session['user_id'] and new_status == 'inactive':
         flash("You cannot deactivate your own admin account.", 'danger')
         return redirect(url_for('admin_user_management'))

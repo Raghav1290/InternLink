@@ -63,6 +63,7 @@ CREATE TABLE `application` (
   `student_id` int NOT NULL,
   `internship_id` int NOT NULL,
   `status` enum('Pending','Accepted','Rejected') NOT NULL DEFAULT 'Pending',
+  `cover_letter` TEXT DEFAULT NULL,
   `feedback` TEXT DEFAULT NULL,
   PRIMARY KEY (`student_id`, `internship_id`),
   FOREIGN KEY (`student_id`) REFERENCES `student` (`student_id`) ON DELETE CASCADE ON UPDATE CASCADE,
